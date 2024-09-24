@@ -22,6 +22,7 @@ while [[ $# -gt 0 ]]; do
         --fmri4_niigz) export fmri4_niigz="${2}"; shift; shift ;;
         --fmritopup_niigz) export fmritopup_niigz="${2}"; shift; shift ;;
         --gm_niigz) export gm_niigz="${2}"; shift; shift ;;
+        --wm_niigz) export wm_niigz="${2}"; shift; shift ;;
         --icv_niigz) export icv_niigz="${2}"; shift; shift ;;
         --refimg_nii) export refimg_nii="${2}"; shift; shift ;;
         --deffwd_niigz) export deffwd_niigz="${2}"; shift; shift ;;
