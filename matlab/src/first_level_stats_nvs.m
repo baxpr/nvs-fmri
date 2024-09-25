@@ -64,13 +64,11 @@ for r = 1:4
 	
     % Conditions
     c = 0;
-    for cond = {'anticipate','heart','counting','fixation'}
+    for cond = timings{r}
     	c = c + 1;
-    	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).name = cond{1};
-    	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).onset = ...
-    		timings{r}.fmri_onset_sec(strcmp(timings{r}.condition,cond));
-    	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).duration = ...
-    		timings{r}.duration_sec(strcmp(timings{r}.condition,cond));
+    	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).name = cond.name;
+    	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).onset = cond.onsets;
+    	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).duration = 0;
     	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).tmod = 0;
     end
 
@@ -90,6 +88,7 @@ matlabbatch{3}.spm.stats.con.spmmat = ...
 matlabbatch{3}.spm.stats.con.delete = 1;
 c = 0;
 
+%% FIXME WE ARE HERE
 c = c + 1;
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Anticipate gt Fixation';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [1 0 0 -1];

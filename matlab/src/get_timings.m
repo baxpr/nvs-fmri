@@ -21,7 +21,7 @@ eprime = readtable(eprime_csv);
 
 % First trial:
 %
-% time    frombacktick   
+% time    frombacktick
 % 190862             0    Backtick
 % 200896         10034    ISICue.OnsetTime
 % 205911         15049    Cue.OnsetTime        *
@@ -37,119 +37,56 @@ eprime = readtable(eprime_csv);
 
 % We also have these vars
 %    Valence    Fear / Neutral
-%    Type       1 / 2 / 3
+%    Type       1 / 2 / 3  is  Neutral / Fear / Unknown
 %    Cue        X.bmp / question.bmp / o.bmp
 
+% conditions from original script:
+%
+%  NeutralCue               70 84 96         139             195     223     250     280
+%  FearCue      15 28 44                 126     153 165                 236             293
+%  UnknownCue            56          111                 180     210             265         306 320 334
+%
+% Condition:   F F F U N N N U F N F F U N U N F N U N F U U U
+% Type:        2 2 2 3 1 1 1 3 2 1 2 2 3 1 3 1 2 1 3 1 2 3 3 3
+%
+% Unknown image condition is split by neutral/fear Valence
 
 
+scanstarts = sort(eprime.ScannerWait5_RTTime(~isnan(eprime.ScannerWait5_RTTime)));
 
-%% OLD HCT CODE BELOW HERE
+timings = [];
 
-% First grab the start time
-run1 = table( ...
-    {'Instruction'}, ...
-    {'scanstart'}, ...
-    eprime.Instruction_RTTime(~isnan(eprime.Instruction_RTTime)) / 1000, ...
-    0, ...
-    'VariableNames', ...
-    {'eprime_label','condition','onset_sec','duration_sec'} ...
-    );
+for r = 1:4
+    runtag = sprintf('Run%dTrialProc',r);
+    timings{r} = [];
 
-% Conditions
-run1 = [run1; parsefun(eprime,'Fixation1','fixation')];
-run1 = [run1; parsefun(eprime,'Fixation17','anticipate')];
-run1 = [run1; parsefun(eprime,'ImageDisplay1','heart')];
-run1 = [run1; parsefun(eprime,'RESPONSE','response')];
-run1 = [run1; parsefun(eprime,'Fixation2','fixation')];
-run1 = [run1; parsefun(eprime,'Fixation10','anticipate')];
-run1 = [run1; parsefun(eprime,'RESPONSE1','response')];
+    timings{r}(end+1).name = 'Cue_Neutral';
+    inds = eprime.Type==1 & strcmp(eprime.Procedure,runtag);
+    timings{r}(end).onsets = (eprime.Cue_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-% Relative onsets/offsets for fmri
-run1.fmri_onset_sec = run1.onset_sec ...
-    - run1.onset_sec(strcmp(run1.condition,'scanstart'));
-run1.fmri_offset_sec = run1.fmri_onset_sec + run1.duration_sec;
+    timings{r}(end+1).name = 'Cue_Fear';
+    inds = eprime.Type==2 & strcmp(eprime.Procedure,runtag);
+    timings{r}(end).onsets = (eprime.Cue_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-% Run label
-run1.run(:) = 1;
+    timings{r}(end+1).name = 'Cue_Unknown';
+    inds = eprime.Type==3 & strcmp(eprime.Procedure,runtag);
+    timings{r}(end).onsets = (eprime.Cue_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-% Temporal order by onset
-run1 = sortrows(run1,'fmri_onset_sec');
+    timings{r}(end+1).name = 'Image_Neutral';
+    inds = eprime.Type==1 & strcmp(eprime.Procedure,runtag);
+    timings{r}(end).onsets = (eprime.Image_OnsetTime(inds) - scanstarts(r)) / 1000;
 
+    timings{r}(end+1).name = 'Image_Fear';
+    inds = eprime.Type==2 & strcmp(eprime.Procedure,runtag);
+    timings{r}(end).onsets = (eprime.Image_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-%% Run 2
-run2 = table( ...
-    {'WaitForScanner1'}, ...
-    {'scanstart'}, ...
-    eprime.WaitForScanner1_RTTime(~isnan(eprime.WaitForScanner1_RTTime)) / 1000, ...
-    0, ...
-    'VariableNames', ...
-    {'eprime_label','condition','onset_sec','duration_sec'} ...
-    );
-run2 = [run2; parsefun(eprime,'Fixation3','fixation')];
-run2 = [run2; parsefun(eprime,'Fixation12','anticipate')];
-run2 = [run2; parsefun(eprime,'ImageDisplay6','heart')];
-run2 = [run2; parsefun(eprime,'RESPONSE2','response')];
-run2 = [run2; parsefun(eprime,'Fixation4','fixation')];
-run2 = [run2; parsefun(eprime,'Fixation11','anticipate')];
-run2 = [run2; parsefun(eprime,'RESPONSE3','response')];
-run2.fmri_onset_sec = run2.onset_sec ...
-    - run2.onset_sec(strcmp(run2.condition,'scanstart'));
-run2.fmri_offset_sec = run2.fmri_onset_sec + run2.duration_sec;
-run2.run(:) = 2;
-run2 = sortrows(run2,'fmri_onset_sec');
+    timings{r}(end+1).name = 'Image_Unknown_Neutral';
+    inds = eprime.Type==3 & strcmp(eprime.Valence,'Neutral') & strcmp(eprime.Procedure,runtag);
+    timings{r}(end).onsets = (eprime.Image_OnsetTime(inds) - scanstarts(r)) / 1000;
 
+    timings{r}(end+1).name = 'Image_Unknown_Fear';
+    inds = eprime.Type==3 & strcmp(eprime.Valence,'Fear') & strcmp(eprime.Procedure,runtag);
+    timings{r}(end).onsets = (eprime.Image_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-%% Run 3
-run3 = table( ...
-    {'WaitForScanner2'}, ...
-    {'scanstart'}, ...
-    eprime.WaitForScanner2_RTTime(~isnan(eprime.WaitForScanner2_RTTime)) / 1000, ...
-    0, ...
-    'VariableNames', ...
-    {'eprime_label','condition','onset_sec','duration_sec'} ...
-    );
-run3 = [run3; parsefun(eprime,'Fixation5','fixation')];
-run3 = [run3; parsefun(eprime,'Fixation13','anticipate')];
-run3 = [run3; parsefun(eprime,'ImageDisplay9','heart')];
-run3 = [run3; parsefun(eprime,'RESPONSE5','response')];
-run3 = [run3; parsefun(eprime,'Fixation6','fixation')];
-run3 = [run3; parsefun(eprime,'Fixation14','anticipate')];
-run3 = [run3; parsefun(eprime,'RESPONSE4','response')];
-run3.fmri_onset_sec = run3.onset_sec ...
-    - run3.onset_sec(strcmp(run3.condition,'scanstart'));
-run3.fmri_offset_sec = run3.fmri_onset_sec + run3.duration_sec;
-run3.run(:) = 3;
-run3 = sortrows(run3,'fmri_onset_sec');
-
-
-%% Run 4
-run4 = table( ...
-    {'WaitForScanner3'}, ...
-    {'scanstart'}, ...
-    eprime.WaitForScanner3_RTTime(~isnan(eprime.WaitForScanner3_RTTime)) / 1000, ...
-    0, ...
-    'VariableNames', ...
-    {'eprime_label','condition','onset_sec','duration_sec'} ...
-    );
-run4 = [run4; parsefun(eprime,'Fixation7','fixation')];
-run4 = [run4; parsefun(eprime,'Fixation15','anticipate')];
-run4 = [run4; parsefun(eprime,'ImageDisplay12','heart')];
-run4 = [run4; parsefun(eprime,'RESPONSE6','response')];
-run4 = [run4; parsefun(eprime,'Fixation8','fixation')];
-run4 = [run4; parsefun(eprime,'Fixation16','anticipate')];
-run4 = [run4; parsefun(eprime,'RESPONSE7','response')];
-run4.fmri_onset_sec = run4.onset_sec ...
-    - run4.onset_sec(strcmp(run4.condition,'scanstart'));
-run4.fmri_offset_sec = run4.fmri_onset_sec + run4.duration_sec;
-run4.run(:) = 4;
-run4 = sortrows(run4,'fmri_onset_sec');
-
-
-%% Final return values
-timings{1} = run1;
-timings{2} = run2;
-timings{3} = run3;
-timings{4} = run4;
-
-
+end
 
