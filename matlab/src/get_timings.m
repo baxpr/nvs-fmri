@@ -6,6 +6,41 @@ eprime = readtable(eprime_csv);
 
 %% Run 1
 
+% Backtick is ScannerWait5.RTTime and there should be four
+
+% FIXME We are here for conversion to NVS
+% Previous script is modeling these:
+%
+%    {'NeutralCue'         }
+%    {'FearCue'            }
+%    {'NeutralImage'       }
+%    {'FearImage'          }
+%    {'UnknownCue'         }
+%    {'UnknownNeutralImage'}
+%    {'UnknownFearImage'   }
+
+% First trial:
+%
+% time    frombacktick   
+% 190862             0    Backtick
+% 200896         10034    ISICue.OnsetTime
+% 205911         15049    Cue.OnsetTime        *
+% 206398         15536    Cue.RTTime
+% 206927         16065    ISIImage.OnsetTime
+% 211959         21097    Image.OnsetTime      *
+% 212534         21672    Image.RTTime
+%
+% This Cue.OnsetTime is the first FearCue from the original script
+%
+% This Image.OnsetTime is the first FearImage from the original script
+
+
+% We also have these vars
+%    Valence    Fear / Neutral
+%    Type       1 / 2 / 3
+%    Cue        X.bmp / question.bmp / o.bmp
+
+
 % First grab the start time
 run1 = table( ...
     {'Instruction'}, ...

@@ -1,4 +1,4 @@
-function first_level_stats_hct(inp)
+function first_level_stats_nvs(inp)
 
 % Block design, four predictors: anticipate, heart, sun, fixation
 % Some 5-sec rest sections are left out in the model (motion is expected)

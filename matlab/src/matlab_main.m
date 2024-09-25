@@ -59,4 +59,4 @@ inp.swfmri3_nii = fullfile(inp.out_dir,['s' n e]);
 inp.swfmri4_nii = fullfile(inp.out_dir,['s' n e]);
 
 % First level stats and contrasts
-first_level_stats_hct(inp);
+first_level_stats_nvs(inp);
