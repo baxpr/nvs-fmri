@@ -41,6 +41,10 @@ eprime = readtable(eprime_csv);
 %    Cue        X.bmp / question.bmp / o.bmp
 
 
+
+
+%% OLD HCT CODE BELOW HERE
+
 % First grab the start time
 run1 = table( ...
     {'Instruction'}, ...
