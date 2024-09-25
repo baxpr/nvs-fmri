@@ -1,13 +1,6 @@
 function first_level_stats_nvs(inp)
 
-% Block design, four predictors: anticipate, heart, sun, fixation
-% Some 5-sec rest sections are left out in the model (motion is expected)
-% Contrasts of interest will be
-%      heart vs fixation
-%      sun vs fixation
-%      heart vs sun
-
-tag = 'hct';
+tag = 'nvs';
 
 % Filter param
 hpf_sec = str2double(inp.hpf_sec);
@@ -58,8 +51,9 @@ for r = 1:4
 	matlabbatch{1}.spm.stats.fmri_spec.sess(r).multi = {''};
 	matlabbatch{1}.spm.stats.fmri_spec.sess(r).regress = ...
 		struct('name', {}, 'val', {});
-	matlabbatch{1}.spm.stats.fmri_spec.sess(r).multi_reg = ...
-		{fullfile(inp.out_dir,['motpar' num2str(r) '.txt'])};
+	matlabbatch{1}.spm.stats.fmri_spec.sess(r).multi_reg = {''};
+    %matlabbatch{1}.spm.stats.fmri_spec.sess(r).multi_reg = ...
+	%	{fullfile(inp.out_dir,['motpar' num2str(r) '.txt'])};
 	matlabbatch{1}.spm.stats.fmri_spec.sess(r).hpf = hpf_sec;
 	
     % Conditions
@@ -88,26 +82,93 @@ matlabbatch{3}.spm.stats.con.spmmat = ...
 matlabbatch{3}.spm.stats.con.delete = 1;
 c = 0;
 
-%% FIXME WE ARE HERE
+% Individual predictors
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Anticipate gt Fixation';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [1 0 0 -1];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [1 0 0 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Heart gt Fixation';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 1 0 -1];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 1 0 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Counting gt Fixation';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 1 -1];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Unknown';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 1 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Heart gt Counting';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 1 -1 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 1 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 1 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Unknown Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 0 1 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Unknown Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 0 0 1];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+% Comparisons
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Neutral gt Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [1 -1 0 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Neutral gt Unknown';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [1 0 -1 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Fear gt Unknown';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 1 -1 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Neutral gt Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 1 -1 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Neutral gt UnknownEither';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 1 0 -0.5 -0.5];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Fear gt UnknownEither';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 1 -0.5 -0.5];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Neutral gt UnknownNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 1 0 -1 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Neutral gt UnknownFear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 1 0 0 -1];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Fear gt UnknownNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 1 -1 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Fear gt UnknownFear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 1 0 -1];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
 
 % Inverse of all existing contrasts since SPM won't show us both sides
 numc = numel(matlabbatch{3}.spm.stats.con.consess);
