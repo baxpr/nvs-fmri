@@ -270,3 +270,5 @@ spm_sections(xSPM,hReg,inp.biasnorm_nii)
 % Jump to common location
 spm_mip_ui('SetCoords',[0 -78 -15],spm_mip_ui('FindMIPax'));
 
+% Screenshot
+spm_window_print(fullfile(inp.out_dir,['first_level_result_' tag '.png']));

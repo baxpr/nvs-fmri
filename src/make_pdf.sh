@@ -40,7 +40,7 @@ for connum in 1 2 3; do
 	        --scene ortho --worldLoc 0 0 ${slice} --displaySpace world --size 600 600 --yzoom 1000 \
 	        --layout horizontal --hideCursor --hideLabels --hidex --hidey \
 		    biasnorm --overlayType volume \
-		    ${spm_dir}/spmT_${connum0} --overlayType volume --displayRange 3 10 \
+		    ${spm_dir}/spmT_${connum0} --overlayType volume --displayRange 2.5 7 \
 		    --useNegativeCmap --cmap red-yellow --negativeCmap blue-lightblue
     done
 
@@ -75,8 +75,13 @@ convert -size 2600x3365 xc:white \
 	-gravity SouthEast -pointsize 48 -annotate +100+100 "${thedate}" \
 	page_design_nvs.png
 
+convert -size 2600x3365 xc:white \
+	-gravity center \( first_level_result_nvs_001.png -resize 2000x \) -composite \
+	-gravity SouthEast -pointsize 48 -annotate +100+100 "${thedate}" \
+	page_result_nvs.png
+
 convert \
     page_reg.png \
-    page_design_nvs.png page_spm_nvs_*.png \
+    page_design_nvs.png page_result_nvs.png page_spm_nvs_*.png \
     nvs-fmri.pdf
 
