@@ -93,6 +93,22 @@ matlabbatch{3}.spm.stats.con.spmmat = ...
 matlabbatch{3}.spm.stats.con.delete = 1;
 c = 0;
 
+% Combined conditions for sanity check
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue All';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [1/3 1/3 1/3 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image All';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 1/4 1/4 1/4 1/4];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
+c = c + 1;
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image All gt Cue All';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [-1/3 -1/3 -1/3 1/4 1/4 1/4 1/4];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
+
 % Individual predictors
 c = c + 1;
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Neutral';
@@ -234,7 +250,7 @@ writetable(connames,fullfile(inp.out_dir,['spm_contrast_names_' tag '.csv']));
 xSPM = struct( ...
     'swd', matlabbatch{1}.spm.stats.fmri_spec.dir, ...
     'title', '', ...
-    'Ic', 2, ...
+    'Ic', 3, ...
     'n', 0, ...
     'Im', [], ...
     'pm', [], ...
