@@ -11,11 +11,11 @@ docker run \
     --fmritopup_niigz /INPUTS/fmri_topup.nii.gz \
     --gm_niigz /INPUTS/gray_native.nii.gz \
     --wm_niigz /INPUTS/white_native.nii.gz \
-    --icv_niigz /INPUTS/p0t1.nii.gz \
+    --icv_niigz /INPUTS/icv_native.nii.gz \
     --refimg_nii avg152T1.nii \
-    --deffwd_niigz /INPUTS/y_t1.nii.gz \
-    --biascorr_niigz /INPUTS/mt1.nii.gz \
-    --biasnorm_niigz /INPUTS/wmt1.nii.gz \
+    --deffwd_niigz /INPUTS/y_deffwd.nii.gz \
+    --biascorr_niigz /INPUTS/bias_corr.nii.gz \
+    --biasnorm_niigz /INPUTS/bias_norm.nii.gz \
     --eprime_txt /INPUTS/eprime.txt \
     --pedir "+j" \
     --vox_mm 2 \
