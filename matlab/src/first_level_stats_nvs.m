@@ -265,5 +265,8 @@ xSPM = struct( ...
 spm_sections(xSPM,hReg,inp.biasnorm_nii)
 
 % Jump to global max activation
-spm_mip_ui('Jump',spm_mip_ui('FindMIPax'),'glmax');
+%spm_mip_ui('Jump',spm_mip_ui('FindMIPax'),'glmax');
+
+% Jump to common location
+spm_mip_ui('SetCoords',[0 -78 -15],spm_mip_ui('FindMIPax'));
 
