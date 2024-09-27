@@ -2,6 +2,7 @@
 
 import argparse
 from datetime import datetime
+from datetime import timedelta
 import pydicom
 
 parser = argparse.ArgumentParser()
@@ -30,6 +31,11 @@ if not eprime_time:
 ds = pydicom.dcmread(args.fmri_dcm)
 dcm_datetime = ds['AcquisitionDateTime'].value
 
-print(eprime_date)
-print(eprime_time)
-print(dcm_datetime)
+eprime_dt = datetime.strptime(f'{eprime_date} {eprime_time}', '%m-%d-%Y %H:%M:%S')
+
+dcm_dt = datetime.strptime(dcm_datetime, '%Y%m%d%H%M%S.%f')
+
+dt_diff = abs(eprime_dt - dcm_dt)
+
+if dt_diff > timedelta(minutes=60):
+    raise Exception(f'Time difference between eprime and fmri is {dt_diff}')
