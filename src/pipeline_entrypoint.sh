@@ -16,6 +16,7 @@ export out_dir=/OUTPUTS
 while [[ $# -gt 0 ]]; do
     key="${1}"
     case $key in   
+        --fmri1_dcm) export fmri1_dcm="${2}"; shift; shift ;;
         --fmri1_niigz) export fmri1_niigz="${2}"; shift; shift ;;
         --fmri2_niigz) export fmri2_niigz="${2}"; shift; shift ;;
         --fmri3_niigz) export fmri3_niigz="${2}"; shift; shift ;;

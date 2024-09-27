@@ -2,6 +2,10 @@
 
 echo Running $(basename "${BASH_SOURCE}")
 
+# Check timestamps between fmri and eprime, to make sure we have the
+# right eprime file
+check_datetime.py --fmri_dcm "${fmri1_dcm}" --eprime_txt ${eprime_txt}
+
 # Copy inputs to the working directory
 copy_inputs.sh
 

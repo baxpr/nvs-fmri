@@ -20,6 +20,9 @@ ENV MATLAB_RUNTIME=/usr/local/MATLAB/MATLAB_Runtime/R2023a
 ENV MCR_INHIBIT_CTF_LOCK=1
 ENV MCR_CACHE_ROOT=/tmp
 
+# Additional python modules
+RUN pip3 install pydicom
+
 # Copy the pipeline code
 COPY matlab /opt/nvs-fmri/matlab
 COPY src /opt/nvs-fmri/src
