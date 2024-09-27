@@ -37,5 +37,9 @@ dcm_dt = datetime.strptime(dcm_datetime, '%Y%m%d%H%M%S.%f')
 
 dt_diff = abs(eprime_dt - dcm_dt)
 
+print(f'Eprime timestamp: {eprime_dt}')
+print(f'First fMRI timestamp: {dcm_dt}')
+print(f'Difference: {dt_diff}')
+
 if dt_diff > timedelta(minutes=60):
     raise Exception(f'Time difference between eprime and fmri is {dt_diff}')
