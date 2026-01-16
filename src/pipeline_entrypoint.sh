@@ -5,36 +5,22 @@
 echo Running $(basename "${BASH_SOURCE}")
 
 # Initialize defaults
-export pedir="+j"
-export vox_mm=2
 export hpf_sec=300
 export fwhm_mm=6
-export refimg_nii=avg152T1.nii
 export out_dir=/OUTPUTS
 
-# Parse input options
+# Parse input 
 while [[ $# -gt 0 ]]; do
     key="${1}"
     case $key in   
-        --fmri1_dcm) export fmri1_dcm="${2}"; shift; shift ;;
-        --fmri1_niigz) export fmri1_niigz="${2}"; shift; shift ;;
-        --fmri2_niigz) export fmri2_niigz="${2}"; shift; shift ;;
-        --fmri3_niigz) export fmri3_niigz="${2}"; shift; shift ;;
-        --fmri4_niigz) export fmri4_niigz="${2}"; shift; shift ;;
-        --fmritopup_niigz) export fmritopup_niigz="${2}"; shift; shift ;;
-        --gm_niigz) export gm_niigz="${2}"; shift; shift ;;
-        --wm_niigz) export wm_niigz="${2}"; shift; shift ;;
-        --icv_niigz) export icv_niigz="${2}"; shift; shift ;;
-        --refimg_nii) export refimg_nii="${2}"; shift; shift ;;
-        --deffwd_niigz) export deffwd_niigz="${2}"; shift; shift ;;
-        --biascorr_niigz) export biascorr_niigz="${2}"; shift; shift ;;
-        --biasnorm_niigz) export biasnorm_niigz="${2}"; shift; shift ;;
-        --eprime_txt) export eprime_txt="${2}"; shift; shift ;;
-        --pedir) export pedir="${2}"; shift; shift ;;
-        --vox_mm) export vox_mm="${2}"; shift; shift ;;
-        --hpf_sec) export hpf_sec="${2}"; shift; shift ;;
-        --fwhm_mm) export fwhm_mm="${2}"; shift; shift ;;
-        --out_dir) export out_dir="${2}"; shift; shift ;;
+        --fmriprep1_dir) export fmriprep1_dir="${2}"; shift; shift ;;
+        --fmriprep2_dir) export fmriprep2_dir="${2}"; shift; shift ;;
+        --fmriprep3_dir) export fmriprep3_dir="${2}"; shift; shift ;;
+        --fmriprep4_dir) export fmriprep4_dir="${2}"; shift; shift ;;
+        --eprime_txt)    export eprime_txt="${2}";    shift; shift ;;
+        --hpf_sec)       export hpf_sec="${2}";       shift; shift ;;
+        --fwhm_mm)       export fwhm_mm="${2}";       shift; shift ;;
+        --out_dir)       export out_dir="${2}";       shift; shift ;;
         *) echo "Input ${1} not recognized" ; shift ;;
     esac
 done
