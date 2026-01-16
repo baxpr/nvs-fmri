@@ -2,29 +2,21 @@ function first_level_stats_nvs(inp)
 
 tag = 'nvs';
 
+nprocruns = numel(inp.fmri_nii);
+
 % Filter param
 hpf_sec = str2double(inp.hpf_sec);
 
-% Save motion params as .mat
-for r = 1:4
-	mot = readtable(inp.(['motpar' num2str(r) '_txt']),'FileType','text');
-	mot = zscore(table2array(mot(:,1:6)));
-	writematrix(mot, fullfile(inp.out_dir,['motpar' num2str(r) '.txt']))
-end
-
 % Get TRs and check
-N = nifti(inp.swfmri1_nii);
+N = nifti(inp.fmri_nii{1});
 tr = N.timing.tspace;
-for r = 2:4
-	N = nifti(inp.(['swfmri' num2str(r) '_nii']));
+for procr = 2:nprocruns
+	N = nifti(inp.fmri_nii{procr});
 	if abs(N.timing.tspace-tr) > 0.001
-		error('TR not matching for run %d',r)
+		error('TR not matching')
 	end
 end
 fprintf('ALERT: USING TR OF %0.3f sec FROM FMRI NIFTI\n',tr)
-
-% Load condition timing info
-timings = get_timings(inp.eprime_csv);
 
 
 %% Design
@@ -43,27 +35,27 @@ matlabbatch{1}.spm.stats.fmri_spec.mthresh = -Inf;
 matlabbatch{1}.spm.stats.fmri_spec.mask = {[spm('dir') '/tpm/mask_ICV.nii']};
 matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
 
-for r = 1:4
+for procr = 1:nprocruns
 
 	% Session-specific scans, regressors, params
-	matlabbatch{1}.spm.stats.fmri_spec.sess(r).scans = ...
-		{inp.(['swfmri' num2str(r) '_nii'])};
-	matlabbatch{1}.spm.stats.fmri_spec.sess(r).multi = {''};
-	matlabbatch{1}.spm.stats.fmri_spec.sess(r).regress = ...
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).scans = ...
+		inp.('fmri_nii')(procr);
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi = {''};
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).regress = ...
 		struct('name', {}, 'val', {});
-	matlabbatch{1}.spm.stats.fmri_spec.sess(r).multi_reg = {''};
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi_reg = {''};
     %matlabbatch{1}.spm.stats.fmri_spec.sess(r).multi_reg = ...
 	%	{fullfile(inp.out_dir,['motpar' num2str(r) '.txt'])};
-	matlabbatch{1}.spm.stats.fmri_spec.sess(r).hpf = hpf_sec;
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).hpf = hpf_sec;
 	
     % Conditions
     c = 0;
-    for cond = timings{r}
+    for cond = timings{procr}
     	c = c + 1;
-    	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).name = cond.name;
-    	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).onset = cond.onsets;
-    	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).duration = 0;
-    	matlabbatch{1}.spm.stats.fmri_spec.sess(r).cond(c).tmod = 0;
+    	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).cond(c).name = cond.name;
+    	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).cond(c).onset = cond.onsets;
+    	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).cond(c).duration = 0;
+    	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).cond(c).tmod = 0;
     end
 
 end
