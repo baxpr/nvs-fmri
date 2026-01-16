@@ -15,6 +15,7 @@ disp(P.Results)
 
 % SPM init
 spm_jobman('initcfg');
+spm('defaults','fmri');
 
 % Run the actual pipeline
 outp = fileprep_nvs(P.Results);

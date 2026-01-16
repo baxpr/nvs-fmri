@@ -19,6 +19,27 @@ end
 fprintf('ALERT: USING TR OF %0.3f sec FROM FMRI NIFTI\n',tr)
 
 
+% Smooth fmriprep's fmri timeseries and get smoothed filenames
+fwhm_mm = str2double(inp.fwhm_mm);
+clear smfri_nii
+procr = 0;
+for imgs = inp.fmri_nii
+
+    clear matlabbatch
+    matlabbatch{1}.spm.spatial.smooth.data = imgs(1);
+    matlabbatch{1}.spm.spatial.smooth.fwhm = [fwhm_mm fwhm_mm fwhm_mm];
+    matlabbatch{1}.spm.spatial.smooth.dtype = 0;
+    matlabbatch{1}.spm.spatial.smooth.im = 0;
+    matlabbatch{1}.spm.spatial.smooth.prefix = 's';
+    spm_jobman('run',matlabbatch);
+
+    [~,n,e] = fileparts(imgs{1});
+    procr = procr + 1;
+    sfmri_nii{procr} = fullfile(inp.out_dir,['s' n e]);
+
+end
+
+
 %% Design
 clear matlabbatch
 matlabbatch{1}.spm.stats.fmri_spec.dir = ...
@@ -39,7 +60,7 @@ for procr = 1:nprocruns
 
 	% Session-specific scans, regressors, params
 	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).scans = ...
-		inp.('fmri_nii')(procr);
+		sfmri_nii(procr);
 	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi = {''};
 	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).regress = ...
 		struct('name', {}, 'val', {});
@@ -50,7 +71,7 @@ for procr = 1:nprocruns
 	
     % Conditions
     c = 0;
-    for cond = timings{procr}
+    for cond = inp.timings{procr}
     	c = c + 1;
     	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).cond(c).name = cond.name;
     	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).cond(c).onset = cond.onsets;
@@ -254,7 +275,7 @@ xSPM = struct( ...
 [hReg,xSPM] = spm_results_ui('Setup',xSPM);
 
 % Show on the subject MNI anat
-spm_sections(xSPM,hReg,inp.biasnorm_nii)
+spm_sections(xSPM,hReg,inp.atlasT1_nii)
 
 % Jump to global max activation
 %spm_mip_ui('Jump',spm_mip_ui('FindMIPax'),'glmax');
