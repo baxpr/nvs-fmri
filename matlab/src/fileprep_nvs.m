@@ -28,9 +28,11 @@ timings = get_timings(inp.eprime_csv);
 clear procr_scan motpar_txt fmri_nii finaltimings
 procr = 0;
 for scanr = 1:4
-    confD = dir([inp.(['fmriprep' num2str(scanr) '_dir']) '/sub*/ses*/func/*_desc-confounds_timeseries.tsv']);
-    conffile = fullfile(confD(1).folder,confD(1).name);
-    if exist(conffile,'file')
+    fmriprep_dir = inp.(['fmriprep' num2str(scanr) '_dir']);
+    if ~strcmp(fmriprep_dir,'NONE')
+
+        confD = dir([fmriprep_dir '/sub*/ses*/func/*_desc-confounds_timeseries.tsv']);
+        conffile = fullfile(confD(1).folder,confD(1).name);
 
         procr = procr + 1;
         procr_scan(procr) = scanr;
@@ -41,8 +43,7 @@ for scanr = 1:4
         motpar_txt{procr} = fullfile(inp.out_dir,['motpar' num2str(scanr) '.txt']);
         writematrix(mot, motpar_txt{procr})
 
-        niigzD = dir([inp.(['fmriprep' num2str(scanr) '_dir']) ...
-            '/sub*/ses*/func/*_space-MNI152NLin6Asym_desc-preproc_bold.nii.gz']);
+        niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-MNI152NLin6Asym_desc-preproc_bold.nii.gz']);
         fmri_nii{procr} = fullfile(inp.out_dir,['fmri' num2str(r) '.nii']);
         copyfile( ...
             fullfile(niigzD(1).folder,niigzD(1).name), ...
