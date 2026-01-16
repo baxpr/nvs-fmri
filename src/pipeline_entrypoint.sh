@@ -25,6 +25,9 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# Run the pipeline in xvfb
+# Convert the eprime file
+eprime_to_csv.py -o "${out_dir}"/eprime.csv "${eprime_txt}"
+
+# Run the matlab pipeline in xvfb
 xvfb-run -n $(($$ + 99)) -s '-screen 0 1600x1200x24 -ac +extension GLX' \
-    bash pipeline_main.sh
+    matlabcommandline
