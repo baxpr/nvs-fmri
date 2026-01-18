@@ -62,19 +62,19 @@ inputs:
       - name: fmriprep1
         proctypes: fmriprep-NVS-task-nodc_v23
         resources:
-          - {resource: fmriprepBIDS, fdest: fmriprep1_dir}
+          - {resource: fmriprepBIDS, ftype: DIR, fdest: fmriprep1}
       - name: fmriprep2
         proctypes: fmriprep-NVS-task-nodc_v23
         resources:
-          - {resource: fmriprepBIDS, fdest: fmriprep2_dir}
+          - {resource: fmriprepBIDS, ftype: DIR, fdest: fmriprep2}
       - name: fmriprep3
         proctypes: fmriprep-NVS-task-nodc_v23
         resources:
-          - {resource: fmriprepBIDS, fdest: fmriprep3_dir}
+          - {resource: fmriprepBIDS, ftype: DIR, fdest: fmriprep3}
       - name: fmriprep4
         proctypes: fmriprep-NVS-task-nodc_v23
         resources:
-          - {resource: fmriprepBIDS, fdest: fmriprep4_dir}
+          - {resource: fmriprepBIDS, ftype: DIR, fdest: fmriprep4}
 
 
 outputs:
@@ -87,10 +87,10 @@ command:
   type: singularity_run
   container: nvs-fmri
   args: >-
-    --fmriprep1_dir /INPUTS/fmriprep1
-    --fmriprep2_dir /INPUTS/fmriprep2
-    --fmriprep3_dir /INPUTS/fmriprep3
-    --fmriprep4_dir /INPUTS/fmriprep4
+    --fmriprep1_dir /INPUTS/fmriprep1/fmriprepBIDS
+    --fmriprep2_dir /INPUTS/fmriprep2/fmriprepBIDS
+    --fmriprep3_dir /INPUTS/fmriprep3/fmriprepBIDS
+    --fmriprep4_dir /INPUTS/fmriprep4/fmriprepBIDS
     --eprime_txt /INPUTS/eprime.txt
     --hpf_sec 300
     --fwhm_mm 6
