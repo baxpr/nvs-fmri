@@ -1,0 +1,107 @@
+# https://github.com/baxpr/nvs-fmri
+# Requires cat12
+---
+procyamlversion: 3.0.0-dev.0
+containers:
+  - name: nvs-fmri
+    path: nvs-fmri_v1.1.0.sif
+    source: docker://baxterprogers/nvs-fmri:v1.1.0
+requirements:
+  walltime: 0-8
+  memory: 8G
+jobtemplate: job_template_v3.txt
+
+inputs:
+
+  xnat:
+
+    filters:
+      - type: match
+        inputs: scan_t1,assr_cat12/t1scan
+        
+    scans:
+
+      - name: scan_t1
+        types: 'cs_T1W_3D_TFE_32 channel'
+        skip_unusable: True
+        keep_multis: first
+
+      - name: scan_fmri1
+        types: Anticipation1
+        skip_unusable: True
+        resources:
+          - {resource: NIFTI, fmatch: '*.nii.gz', fdest: fmri1.nii.gz}
+          - {resource: EPRIME_TXT, fmatch: '*.txt', fdest: eprime.txt}
+          - {resource: DICOM, fmulti: any1, fdest: fmri1.dcm}
+        needs_qc: True
+
+      - name: scan_fmri2
+        types: Anticipation2
+        skip_unusable: True
+        resources:
+          - {resource: NIFTI, fmatch: '*.nii.gz', fdest: fmri2.nii.gz}
+        needs_qc: True
+
+      - name: scan_fmri3
+        types: Anticipation3
+        skip_unusable: True
+        resources:
+          - {resource: NIFTI, fmatch: '*.nii.gz', fdest: fmri3.nii.gz}
+        needs_qc: True
+
+      - name: scan_fmri4
+        types: Anticipation4
+        skip_unusable: True
+        resources:
+          - {resource: NIFTI, fmatch: '*.nii.gz', fdest: fmri4.nii.gz}
+        needs_qc: True
+
+      - name: scan_fmritopup
+        types: TOPUP
+        keep_multis: first
+        resources:
+          - {resource: NIFTI, fmatch: '*.nii.gz', fdest: fmritopup.nii.gz}
+        needs_qc: True
+
+    assessors:
+
+      - name: assr_cat12
+        proctypes: cat12_ss2p0_v2
+        resources:
+          - {resource: DEF_FWD, fmatch: '*.nii.gz', fdest: y_deffwd.nii.gz}
+          - {resource: BIAS_CORR, fmatch: '*.nii.gz', fdest: biascorr.nii.gz}
+          - {resource: BIAS_NORM, fmatch: '*.nii.gz', fdest: biasnorm.nii.gz}
+          - {resource: GRAY_NATIVE, fmatch: '*.nii.gz', fdest: gm_native.nii.gz}
+          - {resource: WHITE_NATIVE, fmatch: '*.nii.gz', fdest: wm_native.nii.gz}
+          - {resource: ICV_NATIVE, fmatch: '*.nii.gz', fdest: icv_native.nii.gz}
+
+outputs:
+  - pdf: nvs-fmri.pdf
+  - dir: spm_nvs
+  - {path: wctrrfmri_mean_all.nii.gz, type: FILE, resource: MEANFMRI_MNI}
+
+
+command: 
+  type: singularity_run
+  container: nvs-fmri
+  args: >-
+    --fmri1_dcm /INPUTS/fmri1.dcm
+    --fmri1_niigz /INPUTS/fmri1.nii.gz
+    --fmri2_niigz /INPUTS/fmri2.nii.gz
+    --fmri3_niigz /INPUTS/fmri3.nii.gz
+    --fmri4_niigz /INPUTS/fmri4.nii.gz
+    --fmritopup_niigz /INPUTS/fmritopup.nii.gz
+    --gm_niigz /INPUTS/gm_native.nii.gz
+    --wm_niigz /INPUTS/wm_native.nii.gz
+    --icv_niigz /INPUTS/icv_native.nii.gz
+    --deffwd_niigz /INPUTS/y_deffwd.nii.gz
+    --biascorr_niigz /INPUTS/biascorr.nii.gz
+    --biasnorm_niigz /INPUTS/biasnorm.nii.gz
+    --eprime_txt /INPUTS/eprime.txt
+    --refimg_nii avg152T1.nii
+    --pedir "+j"
+    --vox_mm 2
+    --hpf_sec 300
+    --fwhm_mm 6
+    --out_dir /OUTPUTS
+

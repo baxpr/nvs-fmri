@@ -1,0 +1,98 @@
+# https://github.com/baxpr/nvs-fmri
+---
+procyamlversion: 3.0.0-dev.0
+containers:
+  - name: nvs-fmri
+    path: nvs-fmri_v2.0.0.sif
+    source: docker://baxterprogers/nvs-fmri:v2.0.0
+requirements:
+  walltime: 0-8
+  memory: 8G
+jobtemplate: job_template_v3.txt
+
+inputs:
+
+  xnat:
+
+    filters:
+      - type: match
+        inputs: scan_t1,fmriprep1/scan_t1
+      - type: match
+        inputs: scan_t1,fmriprep2/scan_t1
+      - type: match
+        inputs: scan_t1,fmriprep3/scan_t1
+      - type: match
+        inputs: scan_t1,fmriprep4/scan_t1
+      - type: match
+        inputs: scan_fmri1,fmriprep1/scan_fmri
+      - type: match
+        inputs: scan_fmri2,fmriprep2/scan_fmri
+      - type: match
+        inputs: scan_fmri3,fmriprep3/scan_fmri
+      - type: match
+        inputs: scan_fmri4,fmriprep4/scan_fmri
+
+    scans:
+
+      - name: scan_t1
+        types: 'cs_T1W_3D_TFE_32 channel'
+        skip_unusable: True
+
+      - name: scan_fmri1
+        types: Anticipation1
+        skip_unusable: True
+        resources:
+          - {resource: EPRIME_TXT, fmatch: '*.txt', fdest: eprime.txt}
+
+      - name: scan_fmri2
+        types: Anticipation2
+        skip_unusable: True
+
+      - name: scan_fmri3
+        types: Anticipation3
+        skip_unusable: True
+
+      - name: scan_fmri4
+        types: Anticipation4
+        skip_unusable: True
+
+
+    assessors:
+
+      - name: fmriprep1
+        proctypes: fmriprep-NVS-task-nodc_v23
+        resources:
+          - {resource: fmriprepBIDS, fdest: fmriprep1_dir}
+      - name: fmriprep2
+        proctypes: fmriprep-NVS-task-nodc_v23
+        resources:
+          - {resource: fmriprepBIDS, fdest: fmriprep2_dir}
+      - name: fmriprep3
+        proctypes: fmriprep-NVS-task-nodc_v23
+        resources:
+          - {resource: fmriprepBIDS, fdest: fmriprep3_dir}
+      - name: fmriprep4
+        proctypes: fmriprep-NVS-task-nodc_v23
+        resources:
+          - {resource: fmriprepBIDS, fdest: fmriprep4_dir}
+
+
+outputs:
+  - pdf: nvs-fmri.pdf
+  - dir: spm_nvs
+  - {path: mean_allfmri.nii.gz, type: FILE, resource: MEANFMRI}
+
+
+command: 
+  type: singularity_run
+  container: nvs-fmri
+  args: >-
+    --fmriprep1_dir /INPUTS/fmriprep1
+    --fmriprep2_dir /INPUTS/fmriprep2
+    --fmriprep3_dir /INPUTS/fmriprep3
+    --fmriprep4_dir /INPUTS/fmriprep4
+    --eprime_txt /INPUTS/eprime.txt
+    --hpf_sec 300
+    --fwhm_mm 6
+    --out_dir /OUTPUTS
+
