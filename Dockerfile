@@ -35,4 +35,4 @@ ENV PATH /opt/nvs-fmri/src:/opt/nvs-fmri/matlab/bin:${PATH}
 RUN run_spm12.sh ${MATLAB_RUNTIME} function quit
 
 # Entrypoint
-ENTRYPOINT ["pipeline_entrypoint.sh"]
+ENTRYPOINT ["xwrapper.sh","pipeline_entrypoint.sh"]
