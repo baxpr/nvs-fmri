@@ -30,4 +30,17 @@ eprime_to_csv.py -o "${out_dir}"/eprime.csv "${eprime_txt}"
 
 # Run the matlab pipeline in xvfb
 xvfb-run -n $(($$ + 99)) -s '-screen 0 1600x1200x24 -ac +extension GLX' \
-    matlabcommandline
+    run_spm12.sh "${MATLAB_RUNTIME}" function matlab_entrypoint \
+    fmriprep1_dir "${fmriprep1_dir}" \
+    fmriprep2_dir "${fmriprep2_dir}" \
+    fmriprep3_dir "${fmriprep3_dir}" \
+    fmriprep4_dir "${fmriprep4_dir}" \
+    hpf_sec "${hpf_sec}" \
+    fwhm_mm "${fwhm_mm}" \
+    out_dir "${out_dir}"
+
+# Freeview-based PDF creation
+xvfb-run -n $(($$ + 99)) -s '-screen 0 1600x1200x24 -ac +extension GLX' make_pdf.sh
+
+# Finalize and organize outputs
+finalize.sh

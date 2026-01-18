@@ -25,7 +25,7 @@ timings = get_timings(inp.eprime_csv);
 % procr is the run for the processing, with missing ones skipped
 
 % Scale motion params and save in SPM friendly format
-clear procr_scan motpar_txt fmri_nii finaltimings
+clear procr_scan motpar_txt fmri_nii meanfmri_nii finaltimings
 procr = 0;
 for scanr = 1:4
     fmriprep_dir = inp.(['fmriprep' num2str(scanr) '_dir']);
@@ -50,6 +50,13 @@ for scanr = 1:4
             [fmri_nii{procr} '.gz'] ...
             );
         
+        niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-MNI152NLin6Asym_boldref.nii.gz']);
+        meanfmri_nii{procr} = fullfile(inp.out_dir,['meanfmri' num2str(scanr) '.nii']);
+        copyfile( ...
+            fullfile(niigzD(1).folder,niigzD(1).name), ...
+            [meanfmri_nii{procr} '.gz'] ...
+            );
+
         finaltimings{procr} = timings{scanr};
 
     end

@@ -11,11 +11,3 @@ for d in \
     gzip "${d}"/*.nii
 done
 
-# Zip unsmoothed mean fmri
-gzip wctrrfmri_mean_all.nii
-
-# Preprocessed fmri
-mkdir SWFMRI
-cp swctrrfmri?.nii SWFMRI
-gzip SWFMRI/*.nii
-
