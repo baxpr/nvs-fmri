@@ -40,7 +40,7 @@ xvfb-run -n $(($$ + 99)) -s '-screen 0 1600x1200x24 -ac +extension GLX' \
     out_dir "${out_dir}"
 
 # Freeview-based PDF creation
-xvfb-run -n $(($$ + 99)) -s '-screen 0 1600x1200x24 -ac +extension GLX' make_pdf.sh
+xvfb-run -n $(($$ + 99)) -s '-screen 0 1600x1200x24 -ac +extension GLX' bash make_pdf.sh
 
 # Finalize and organize outputs
 finalize.sh
