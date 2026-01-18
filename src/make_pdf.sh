@@ -11,7 +11,7 @@ thedate=$(date)
 # Overall mean fmri
 cmd=
 let denom=0
-for f in "${out_dir}"/mean_fmri*.nii.gz; do
+for f in "${out_dir}"/meanfmri?.nii.gz; do
     cmd="${cmd} -add ${f}"
     ((denom++))
 done
