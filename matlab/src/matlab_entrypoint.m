@@ -22,7 +22,7 @@ spm('defaults','fmri');
 % Run the actual pipeline
 outp = fileprep_nvs(P.Results);
 first_level_stats_nvs(outp);
-ppi_processing(inp);
+ppi_processing(outp);
 
 % Exit
 if isdeployed

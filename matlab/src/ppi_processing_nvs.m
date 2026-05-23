@@ -9,8 +9,8 @@ spm_dir = fullfile(inp.out_dir,['spm_' tag]);
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitize ROI names
 roi_dir = fullfile(inp.out_dir,['roiwkdir_' tag]);
-makedir(roi_dir);
-V = spm_vol(ppiroi_niigz);
+mkdir(roi_dir);
+V = spm_vol(inp.ppiroi_niigz);
 Yroi = spm_readvols(V);
 roiinds = unique(Yroi(:));
 roiinds = roiinds(roiinds~=0);
@@ -64,8 +64,6 @@ for c = 2:numel(P.Tasks)
         );
 end
 
-addpath([pwd '/external/spm8_r6313/spm8'])
-addpath(genpath([pwd '/external/gppi']))
 save([pwd '/../OUTPUTS/BSNT_L_PPI.mat'],'P')
 PPPI([pwd '/../OUTPUTS/BSNT_L_PPI.mat'])
 
