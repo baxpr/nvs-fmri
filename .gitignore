@@ -1,4 +1,5 @@
 INPUTS*
 OUTPUTS*
 local*
-matlab/external/spm12_r7771
+matlab/external/spm12_r7771/spm12
+matlab/external/spm8_r6313/spm8
