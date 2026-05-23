@@ -60,31 +60,31 @@ for r = 1:4
     runtag = sprintf('Run%dTrialProc',r);
     timings{r} = [];
 
-    timings{r}(end+1).name = 'Cue_Neutral';
+    timings{r}(end+1).name = 'CueNeutral';
     inds = eprime.Type==1 & strcmp(eprime.Procedure,runtag);
     timings{r}(end).onsets = (eprime.Cue_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-    timings{r}(end+1).name = 'Cue_Fear';
+    timings{r}(end+1).name = 'CueFear';
     inds = eprime.Type==2 & strcmp(eprime.Procedure,runtag);
     timings{r}(end).onsets = (eprime.Cue_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-    timings{r}(end+1).name = 'Cue_Unknown';
+    timings{r}(end+1).name = 'CueUnknown';
     inds = eprime.Type==3 & strcmp(eprime.Procedure,runtag);
     timings{r}(end).onsets = (eprime.Cue_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-    timings{r}(end+1).name = 'Image_Neutral';
+    timings{r}(end+1).name = 'ImageNeutral';
     inds = eprime.Type==1 & strcmp(eprime.Procedure,runtag);
     timings{r}(end).onsets = (eprime.Image_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-    timings{r}(end+1).name = 'Image_Fear';
+    timings{r}(end+1).name = 'ImageFear';
     inds = eprime.Type==2 & strcmp(eprime.Procedure,runtag);
     timings{r}(end).onsets = (eprime.Image_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-    timings{r}(end+1).name = 'Image_Unknown_Neutral';
+    timings{r}(end+1).name = 'ImageUnknownNeutral';
     inds = eprime.Type==3 & strcmp(eprime.Valence,'Neutral') & strcmp(eprime.Procedure,runtag);
     timings{r}(end).onsets = (eprime.Image_OnsetTime(inds) - scanstarts(r)) / 1000;
 
-    timings{r}(end+1).name = 'Image_Unknown_Fear';
+    timings{r}(end+1).name = 'ImageUnknownFear';
     inds = eprime.Type==3 & strcmp(eprime.Valence,'Fear') & strcmp(eprime.Procedure,runtag);
     timings{r}(end).onsets = (eprime.Image_OnsetTime(inds) - scanstarts(r)) / 1000;
 

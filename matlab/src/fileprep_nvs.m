@@ -18,7 +18,6 @@ warning('off','MATLAB:table:ModifiedAndSavedVarnames');
 timings = get_timings(inp.eprime_csv);
 
 
-
 %% Find fmriprep files
 %
 % scanr is the run 1-4 as specified on the scanner

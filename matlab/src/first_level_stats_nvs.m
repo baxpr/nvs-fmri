@@ -108,109 +108,109 @@ c = 0;
 
 % Combined conditions for sanity check
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue All';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueAll';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [1/3 1/3 1/3 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image All';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageAll';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 1/4 1/4 1/4 1/4];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image All gt Cue All';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageAllGtCueAll';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [-1/3 -1/3 -1/3 1/4 1/4 1/4 1/4];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 % Individual predictors
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueNeutral';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [1 0 0 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueFear';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 1 0 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Unknown';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueUnknown';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 1 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageNeutral';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 1 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageFear';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 1 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Unknown Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownNeutral';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 0 1 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Unknown Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownFear';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 0 0 1];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 % Comparisons
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Fear gt Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueFearGtNeutral';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [-1 1 0 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Unknown gt Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueUnknownGtNeutral';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [-1 0 1 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Unknown gt Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueUnknownGtFear';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 -1 1 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Fear gt Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageFearGtNeutral';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 -1 1 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownEither gt Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownEitherGtNeutral';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 -1 0 0.5 0.5];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownEither gt Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownEitherGtFear';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 -1 0.5 0.5];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownNeutral gt Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownNeutralGtNeutral';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 -1 0 1 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownFear gt Neutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownFearGtNeutral';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 -1 0 0 1];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownNeutral gt Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownNeutralGtFear';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 -1 1 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownFear gt Fear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownFearGtFear';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 -1 0 1];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownFear gt UnknownNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownFearGtUnknownNeutral';
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 0 -1 1];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
