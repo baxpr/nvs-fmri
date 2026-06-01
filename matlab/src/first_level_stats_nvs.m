@@ -11,20 +11,22 @@ nprocruns = numel(inp.fmri_nii);
 % Filter param
 hpf_sec = str2double(inp.hpf_sec);
 
-% Ugly way to load TR, since nifti doesn't do it in SPM8
-clear TRs
-for f = 1:numel(inp.fmri_nii)
-    fid = fopen(inp.fmri_nii{f},'r','ieee-be'); % most NIfTI are little-endian
-    fseek(fid, 76, 'bof');                      % offset to pixdim[0]
-    pixdim = fread(fid, 8, 'float32');          % pixdim[0..7]
-    fclose(fid);
-    TRs(f) = pixdim(5);                         % pixdim[4] in 0-based; 5th element in MATLAB
-end
-tr = TRs(1);
+% Brute force way to load TRs
+%clear TRs
+%for f = 1:numel(inp.fmri_nii)
+%    fid = fopen(inp.fmri_nii{f},'r','ieee-le'); % most NIfTI are little-endian
+%    fseek(fid, 76, 'bof');                      % offset to pixdim[0]
+%    pixdim = fread(fid, 8, 'float32');          % pixdim[0..7]
+%    fclose(fid);
+%    TRs(f) = pixdim(5);                         % pixdim[4] in 0-based; 5th element in MATLAB
+%end
 
 % Get TRs and check
+N = nifti(inp.fmri_nii{1});
+tr = N.timing.tspace;
 for procr = 2:nprocruns
-	if abs(TRs(procr)-tr) > 0.001
+	N = nifti(inp.fmri_nii{procr});
+	if abs(N.timing.tspace-tr) > 0.001
 		error('TR not matching')
 	end
 end
@@ -33,7 +35,7 @@ fprintf('ALERT: USING TR OF %0.3f sec FROM FMRI NIFTI\n',tr)
 
 % Smooth fmriprep's fmri timeseries and get smoothed filenames
 fwhm_mm = str2double(inp.fwhm_mm);
-clear smfri_nii
+clear sfmri_nii
 procr = 0;
 for imgs = inp.fmri_nii
 
