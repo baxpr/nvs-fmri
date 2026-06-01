@@ -2,6 +2,11 @@ function first_level_stats_nvs(inp)
 
 tag = 'nvs';
 
+spm_dir = fullfile(inp.out_dir,['spm_' tag]);
+if ~exist(spm_dir, 'dir')
+    mkdir(spm_dir)
+end
+
 nprocruns = numel(inp.fmri_nii);
 
 % Filter param
@@ -42,8 +47,7 @@ end
 
 %% Design
 clear matlabbatch
-matlabbatch{1}.spm.stats.fmri_spec.dir = ...
-	{fullfile(inp.out_dir,['spm_' tag])};
+matlabbatch{1}.spm.stats.fmri_spec.dir = {spm_dir};
 matlabbatch{1}.spm.stats.fmri_spec.timing.units = 'secs';
 matlabbatch{1}.spm.stats.fmri_spec.timing.RT = tr;
 matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t = 16;
