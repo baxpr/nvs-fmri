@@ -37,7 +37,7 @@ fprintf('ALERT: USING TR OF %0.3f sec FROM FMRI NIFTI\n',tr)
 fwhm_mm = str2double(inp.fwhm_mm);
 clear sfmri_nii
 procr = 0;
-for imgs = []%inp.fmri_nii
+for imgs = inp.fmri_nii
 
     clear matlabbatch
     matlabbatch{1}.spm.spatial.smooth.data = imgs(1);
@@ -45,7 +45,7 @@ for imgs = []%inp.fmri_nii
     matlabbatch{1}.spm.spatial.smooth.dtype = 0;
     matlabbatch{1}.spm.spatial.smooth.im = 0;
     matlabbatch{1}.spm.spatial.smooth.prefix = 's';
-    spm_jobman('run',matlabbatch);
+    %spm_jobman('run',matlabbatch);
 
     [~,n,e] = fileparts(imgs{1});
     procr = procr + 1;
