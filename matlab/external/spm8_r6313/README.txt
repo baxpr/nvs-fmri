@@ -4,7 +4,8 @@ compiled code. Its source is not included in the code repository or in the conta
 SPM8 (r6313)
     https://github.com/spm/spm8/releases/tag/r6313
 
+The mask_ICV.nii file from SPM12 must be copied to spm8/tpm, as it doesn't exist in the 
+SPM8 install.
 
 The PPPI toolbox v13.1 must also be copied to the SPM8 toolbox/PPPI directory:
     https://www.nitrc.org/projects/gppi
-
