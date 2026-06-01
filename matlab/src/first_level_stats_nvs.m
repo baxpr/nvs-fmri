@@ -74,10 +74,10 @@ for procr = 1:nprocruns
 	% Session-specific scans, regressors, params
 	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).scans = ...
 		sfmri_nii(procr);
-	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi = {''};
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi = {};
 	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).regress = ...
 		struct('name', {}, 'val', {});
-	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi_reg = {''};
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi_reg = {};
     %matlabbatch{1}.spm.stats.fmri_spec.sess(r).multi_reg = ...
 	%	{fullfile(inp.out_dir,['motpar' num2str(r) '.txt'])};
 	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).hpf = hpf_sec;
@@ -92,6 +92,22 @@ for procr = 1:nprocruns
     	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).cond(c).tmod = 0;
     end
 
+end
+
+
+% Convert 4D nii filename to 3D list for SPM8
+for i = 1:numel(matlabbatch{1}.spm.stats.fmri_spec.sess)
+    f4d = matlabbatch{1}.spm.stats.fmri_spec.sess(i).scans{1};
+    [p,n,e] = fileparts(f4d);
+
+    % make full path relative to the batch dir if needed
+    f4d_full = fullfile(matlabbatch{1}.spm.stats.fmri_spec.dir{1}, f4d);
+    if ~exist(f4d_full,'file')
+        f4d_full = f4d;
+    end
+
+    vols = cellstr(spm_select('ExtFPList', fileparts(f4d_full), [n e], Inf));
+    matlabbatch{1}.spm.stats.fmri_spec.sess(i).scans = vols;
 end
 
 
