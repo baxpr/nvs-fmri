@@ -13,6 +13,9 @@ inp = struct( ...
 	'biasnorm_nii', [pwd '/../../OUTPUTS/biasnorm.nii'] ...
 	);
 
+spm_jobman('initcfg');
+spm('defaults','fmri');
+
 first_level_stats_nvs(inp);
 
 cd(wd);
