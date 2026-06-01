@@ -12,7 +12,7 @@ mkdir(roi_dir);
 copyfile(inp.ppiroi_niigz, roi_dir)
 [~,n,e] = fileparts(inp.ppiroi_niigz);
 gunzip(fullfile(roi_dir,[n e]))
-ppiroi_nii = fullfile(roi_dir,n))
+ppiroi_nii = fullfile(roi_dir,n);
 V = spm_vol(ppiroi_nii);
 Yroi = spm_readvols(V);
 roiinds = unique(Yroi(:));
