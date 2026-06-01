@@ -5,22 +5,26 @@ disp(inp)
 tag = 'nvs';
 
 spm_dir = fullfile(inp.out_dir,['spm_' tag]);
-disp(['spm_dir is ' spm_dir])
-if ~exist(spm_dir, 'dir')
-    mkdir(spm_dir)
-end
 
 nprocruns = numel(inp.fmri_nii);
 
 % Filter param
 hpf_sec = str2double(inp.hpf_sec);
 
+% Ugly way to load TR, since nifti doesn't do it in SPM8
+clear TRs
+for f = 1:numel(inp.fmri_nii)
+    fid = fopen(inp.fmri_nii{f},'r','ieee-le'); % most NIfTI are little-endian
+    fseek(fid, 76, 'bof');                      % offset to pixdim[0]
+    pixdim = fread(fid, 8, 'float32');          % pixdim[0..7]
+    fclose(fid);
+    TRs(f) = pixdim(5);                         % pixdim[4] in 0-based; 5th element in MATLAB
+end
+tr = TRs(1);
+
 % Get TRs and check
-N = nifti(inp.fmri_nii{1});
-tr = N.timing.tspace;
 for procr = 2:nprocruns
-	N = nifti(inp.fmri_nii{procr});
-	if abs(N.timing.tspace-tr) > 0.001
+	if abs(TRs(procr)-tr) > 0.001
 		error('TR not matching')
 	end
 end
