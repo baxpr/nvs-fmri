@@ -14,7 +14,7 @@ hpf_sec = str2double(inp.hpf_sec);
 % Ugly way to load TR, since nifti doesn't do it in SPM8
 clear TRs
 for f = 1:numel(inp.fmri_nii)
-    fid = fopen(inp.fmri_nii{f},'r','ieee-le'); % most NIfTI are little-endian
+    fid = fopen(inp.fmri_nii{f},'r','ieee-be'); % most NIfTI are little-endian
     fseek(fid, 76, 'bof');                      % offset to pixdim[0]
     pixdim = fread(fid, 8, 'float32');          % pixdim[0..7]
     fclose(fid);
