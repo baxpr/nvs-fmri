@@ -72,12 +72,10 @@ matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
 for procr = 1:nprocruns
 
 	% Session-specific scans, regressors, params
-	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).scans = ...
-		sfmri_nii(procr);
-	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi = {};
-	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).regress = ...
-		struct('name', {}, 'val', {});
-	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi_reg = {};
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).scans = sfmri_nii(procr);
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi = {''};
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).regress = struct('name', {}, 'val', {});
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi_reg = {''};
     %matlabbatch{1}.spm.stats.fmri_spec.sess(r).multi_reg = ...
 	%	{fullfile(inp.out_dir,['motpar' num2str(r) '.txt'])};
 	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).hpf = hpf_sec;
