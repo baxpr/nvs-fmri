@@ -1,5 +1,7 @@
 function first_level_stats_nvs(inp)
 
+disp(inp)
+
 tag = 'nvs';
 
 spm_dir = fullfile(inp.out_dir,['spm_' tag]);
