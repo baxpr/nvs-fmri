@@ -16,7 +16,7 @@ parse(P,varargin{:});
 disp(P.Results)
 
 % SPM init
-%spm_jobman('initcfg');
+spm_jobman('initcfg');
 spm('defaults','fmri');
 
 % Run the actual pipeline
