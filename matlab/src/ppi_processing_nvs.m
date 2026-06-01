@@ -5,12 +5,15 @@ tag = 'nvs';
 spm_dir = fullfile(inp.out_dir,['spm_' tag]);
 
 
-% FIXME
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitize ROI names
 roi_dir = fullfile(inp.out_dir,['roiwkdir_' tag]);
 mkdir(roi_dir);
-V = spm_vol(inp.ppiroi_niigz);
+copyfile(inp.ppiroi_niigz, roi_dir)
+[~,n,e] = fileparts(inp.ppiroi_niigz);
+gunzip(fullfile(roi_dir,[n e]))
+ppiroi_nii = fullfile(roi_dir,n))
+V = spm_vol(ppiroi_nii);
 Yroi = spm_readvols(V);
 roiinds = unique(Yroi(:));
 roiinds = roiinds(roiinds~=0);
@@ -19,6 +22,8 @@ if sort(roilabels.index)~=sort(roiinds)
     error('Mismatch in ROI indices')
 end
 
+disp(roilabels)
+return
 
 % Basic PPI analysis parameters
 % There is a bug when specifying 'outdir', so use the default
