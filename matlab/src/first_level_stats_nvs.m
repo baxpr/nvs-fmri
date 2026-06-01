@@ -3,6 +3,7 @@ function first_level_stats_nvs(inp)
 tag = 'nvs';
 
 spm_dir = fullfile(inp.out_dir,['spm_' tag]);
+disp(['spm_dir is ' spm_dir])
 if ~exist(spm_dir, 'dir')
     mkdir(spm_dir)
 end
