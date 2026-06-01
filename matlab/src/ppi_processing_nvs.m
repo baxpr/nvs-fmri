@@ -17,7 +17,7 @@ V = spm_vol(ppiroi_nii);
 Yroi = spm_read_vols(V);
 roiinds = unique(Yroi(:));
 roiinds = roiinds(roiinds~=0);
-roilabels = readtable(inp.ppiroilabels_tsv);
+roilabels = readtable(inp.ppiroilabels_tsv,'FileType','text','Delimiter','tab');
 if sort(roilabels.index)~=sort(roiinds)
     error('Mismatch in ROI indices')
 end
