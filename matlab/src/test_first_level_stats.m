@@ -1,7 +1,7 @@
 
 wd = pwd;
 
-timings = get_timings(inp.eprime_csv);
+timings = get_timings('../../OUTPUTS/eprime.csv');
 
 inp = struct( ...
 	'hpf_sec', '300', ...
