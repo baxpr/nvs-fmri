@@ -5,6 +5,9 @@ disp(inp)
 tag = 'nvs';
 
 spm_dir = fullfile(inp.out_dir,['spm_' tag]);
+if ~exist(spm_dir,'dir')
+    mkdir(spm_dir)
+end
 
 nprocruns = numel(inp.fmri_nii);
 
