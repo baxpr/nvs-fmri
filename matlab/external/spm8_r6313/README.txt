@@ -1,20 +1,21 @@
-SPM8 must be installed to compile the Matlab code, but is not needed to run the 
-compiled code. Its source is not included in the code repository or in the container.
+This is a slightly modified version of SPM8 r6313, with modifications to allow use
+of the PPPI toolbox and permit compilation without error in Matlab 2023a.
 
-SPM8 (r6313)
+SPM8 (r6313) original source
     https://github.com/spm/spm8/releases/tag/r6313
 
-The mask_ICV.nii file from SPM12 (provided here) must be copied to spm8/tpm, as it 
-doesn't exist in the SPM8 install.
+Added file (Intracranial mask obtained from SPM12)
+   spm8/tpm/mask_ICV.nii
 
-The provided spm_defaults.m must be copied to spm8.
+Added directory (gPPI, from https://www.nitrc.org/projects/gppi)
+   spm8/toolbox/PPPI
 
-spm8's spm8/external/fieldtrip directory must be removed to prevent compilation errors.
+Edited file (Some adjustments to defaults)
+   spm8/spm_defaults.m
 
-spm8's spm8/external/yokagawa directory can be removed to prevent compilation warnings.
+Deleted file (blocks compilation)
+   spm8/toolbox/PPPI/contains.m
 
-The PPPI toolbox v13.1 must be copied to the SPM8 toolbox/PPPI directory:
-    https://www.nitrc.org/projects/gppi
-
-spm8/toolbox/PPPI/contains.m msut be renamed to remove it from the path (it
-blocks compilation).
+Deleted directories (block compilation)
+   spm8/external/fieldtrip
+   spm8/external/yokagawa
