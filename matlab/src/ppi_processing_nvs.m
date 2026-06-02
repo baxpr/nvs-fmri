@@ -35,7 +35,7 @@ for r = 1:numel(roilabels)
     Vout.dt(1) = spm_type('uint16');
     Vout.pinfo(1:2) = [1;0];
     Vout.fname = fullfile(roi_dir,[roilabels.label{r} '.nii']);
-    spm_write_vol(Yout,Vout)
+    spm_write_vol(Vout,Yout)
 end
 
 % Basic PPI analysis parameters
