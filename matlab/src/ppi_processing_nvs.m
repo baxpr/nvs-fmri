@@ -1,21 +1,24 @@
 function ppi_processing_nvs(inp)
 
+disp('ppi_processing_nvs')
+disp(inp)
+
 tag = 'nvs';
 
 spm_dir = fullfile(inp.out_dir,['spm_' tag]);
 
-ppiroi_niigz = inp.ppiroi_niigz;
-ppiroilabels_tsv = inp.ppiroilabels_tsv;
+ppiroi_niigz = inp.ppiroi_niigz
+ppiroilabels_tsv = inp.ppiroilabels_tsv
 if ~exist(ppiroi_niigz,'file')
-    ppiroi_niigz = which(ppiroi_niigz);
-    ppiroilabels_tsv = which(ppiroilabels_tsv);
+    ppiroi_niigz = which(ppiroi_niigz)
+    ppiroilabels_tsv = which(ppiroilabels_tsv)
 end
 
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitizing ROI names
 roi_dir = fullfile(inp.out_dir,['roiwkdir_' tag]);
 mkdir(roi_dir);
-copyfile(ppiroi_niigz, roi_dir)
+copyfile(ppiroi_niigz,roi_dir)
 [~,n,e] = fileparts(ppiroi_niigz);
 gunzip(fullfile(roi_dir,[n e]))
 ppiroi_nii = fullfile(roi_dir,n);
