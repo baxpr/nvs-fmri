@@ -75,7 +75,7 @@ for i=1:length(d)
         ftc = [ftc(:); fi(:)];
     end;
 end
-if ~isempty(ft)||~isempty(ftc)
+if ~isempty(ft) | ~isempty(ftc)
     if isempty(ft)
         ftstr = '';
     else
