@@ -9,6 +9,7 @@ addOptional(P,'fmriprep4_dir','/INPUTS/fmriprep4')
 addOptional(P,'eprime_csv','/OUTPUTS/eprime.csv')
 addOptional(P,'ppiroi_niigz','space-MNI152NLin6Asym_atlas-BNST_dseg.nii.gz')
 addOptional(P,'ppiroilabels_tsv','atlas-BNST_dseg.tsv')
+addOptional(P,'ppi_subjlabel','subj')
 addOptional(P,'hpf_sec','300')
 addOptional(P,'fwhm_mm','6')
 addOptional(P,'out_dir','/OUTPUTS');
@@ -22,7 +23,7 @@ spm('defaults','fmri');
 % Run the actual pipeline
 outp = fileprep_nvs(P.Results);
 first_level_stats_nvs(outp);
-ppi_processing(outp);
+ppi_processing_nvs(outp);
 
 % Exit
 if isdeployed

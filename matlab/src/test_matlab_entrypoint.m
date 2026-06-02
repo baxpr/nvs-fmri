@@ -1,6 +1,7 @@
 % This script will test the matlab pipeline from the matlab command line -
 % very useful for making sure it works before we bother to compile.
 
+addpath(pwd)
 
 matlab_entrypoint( ...
     'fmriprep1_dir','../../INPUTS/fmriprep1', ...
