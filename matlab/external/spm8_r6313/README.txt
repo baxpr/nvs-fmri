@@ -11,3 +11,6 @@ The provided spm_defaults.m must be copied to spm8.
 
 The PPPI toolbox v13.1 must be copied to the SPM8 toolbox/PPPI directory:
     https://www.nitrc.org/projects/gppi
+
+spm8/toolbox/PPPI/contains.m msut be renamed to remove it from the path (it
+blocks compilation).
