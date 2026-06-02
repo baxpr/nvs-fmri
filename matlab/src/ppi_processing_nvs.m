@@ -82,6 +82,6 @@ for c = 2:numel(P.Tasks)
         );
 end
 
-save([pwd '/../OUTPUTS/BSNT_L_PPI.mat'],'P')
-PPPI([pwd '/../OUTPUTS/BSNT_L_PPI.mat'])
+save([pwd '/../../OUTPUTS/BSNT_L_PPI.mat'],'P')
+PPPI([pwd '/../../OUTPUTS/BSNT_L_PPI.mat'])
 
