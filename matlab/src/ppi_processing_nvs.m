@@ -7,8 +7,8 @@ tag = 'nvs';
 
 spm_dir = fullfile(inp.out_dir,['spm_' tag]);
 
-ppiroi_niigz = which(inp.ppiroi_niigz)
-ppiroilabels_tsv = which(inp.ppiroilabels_tsv)
+ppiroi_niigz = which(inp.ppiroi_niigz);
+ppiroilabels_tsv = which(inp.ppiroilabels_tsv);
 
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitizing ROI names
