@@ -4,13 +4,19 @@ tag = 'nvs';
 
 spm_dir = fullfile(inp.out_dir,['spm_' tag]);
 
+ppiroi_niigz = inp.ppiroi_niigz;
+ppiroilabels_tsv = inp.ppiroilabels_tsv;
+if ~exist(ppiroi_niigz,'file')
+    ppiroi_niigz = which(ppiroi_niigz);
+    ppiroilabels_tsv = which(ppiroilabels_tsv);
+end
 
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitizing ROI names
 roi_dir = fullfile(inp.out_dir,['roiwkdir_' tag]);
 mkdir(roi_dir);
-copyfile(inp.ppiroi_niigz, roi_dir)
-[~,n,e] = fileparts(inp.ppiroi_niigz);
+copyfile(ppiroi_niigz, roi_dir)
+[~,n,e] = fileparts(ppiroi_niigz);
 gunzip(fullfile(roi_dir,[n e]))
 ppiroi_nii = fullfile(roi_dir,n);
 
@@ -19,7 +25,7 @@ Vroi = spm_vol(ppiroi_nii);
 Yroi = spm_read_vols(Vroi);
 roiinds = unique(Yroi(:));
 roiinds = roiinds(roiinds~=0);
-roilabels = readtable(inp.ppiroilabels_tsv,'FileType','text','Delimiter','tab');
+roilabels = readtable(ppiroilabels_tsv,'FileType','text','Delimiter','tab');
 if sort(roilabels.index)~=sort(roiinds)
     error('Mismatch in ROI indices')
 end
