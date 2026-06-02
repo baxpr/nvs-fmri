@@ -6,15 +6,17 @@ spm_dir = fullfile(inp.out_dir,['spm_' tag]);
 
 
 % Split the ROI file into individual images for PPI -
-% Load, split into individual images for gppi, sanitize ROI names
+% Load, split into individual images for gppi, sanitizing ROI names
 roi_dir = fullfile(inp.out_dir,['roiwkdir_' tag]);
 mkdir(roi_dir);
 copyfile(inp.ppiroi_niigz, roi_dir)
 [~,n,e] = fileparts(inp.ppiroi_niigz);
 gunzip(fullfile(roi_dir,[n e]))
 ppiroi_nii = fullfile(roi_dir,n);
-V = spm_vol(ppiroi_nii);
-Yroi = spm_read_vols(V);
+
+% Load ROIs and cross-check values
+Vroi = spm_vol(ppiroi_nii);
+Yroi = spm_read_vols(Vroi);
 roiinds = unique(Yroi(:));
 roiinds = roiinds(roiinds~=0);
 roilabels = readtable(inp.ppiroilabels_tsv,'FileType','text','Delimiter','tab');
@@ -22,10 +24,19 @@ if sort(roilabels.index)~=sort(roiinds)
     error('Mismatch in ROI indices')
 end
 
-%% FIXME sanitize ROI names, create individual ROI files
-disp(roilabels)
-return
+% Sanitize ROI labels
+roilabels.label = strrep(roilabels.label,' ','_');
 
+% Write individual ROI files
+for r = 1:numel(roilabels)
+    Yout = zeros(size(Yroi));
+    Yout(Yroi(:)==r) = 1;
+    Vout = rmfield(Vroi,'pinfo');
+    Vout.dt(1) = spm_type('uint16');
+    Vout.pinfo(1:2) = [1;0];
+    Vout.fname = fullfile(roi_dir,[roilabels.label{r} '.nii']);
+    spm_write_vol(Yout,Vout)
+end
 
 % Basic PPI analysis parameters
 % There is a bug when specifying 'outdir', so use the default
