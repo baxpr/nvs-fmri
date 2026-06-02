@@ -1,11 +1,4 @@
 
-try
-    compiler.build.standaloneApplication('spm_make_standalone_local.m', 'Verbose', true);
-catch ME
-    fprintf('%s\n', getReport(ME,'extended','hyperlinks','on'));
-end
-
-
 spm_make_standalone_local( ...
     [pwd '/external/spm8_r6313/spm8'], ...
     [pwd '/bin'], ...
