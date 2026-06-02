@@ -9,6 +9,10 @@ doesn't exist in the SPM8 install.
 
 The provided spm_defaults.m must be copied to spm8.
 
+spm8's spm8/external/fieldtrip directory must be removed to prevent compilation errors.
+
+spm8's spm8/external/yokagawa directory can be removed to prevent compilation warnings.
+
 The PPPI toolbox v13.1 must be copied to the SPM8 toolbox/PPPI directory:
     https://www.nitrc.org/projects/gppi
 
