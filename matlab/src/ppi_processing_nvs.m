@@ -28,14 +28,14 @@ end
 roilabels.label = strrep(roilabels.label,' ','_');
 
 % Write individual ROI files
-for r = 1:numel(roilabels)
+for r = 1:height(roilabels)
     Yout = zeros(size(Yroi));
     Yout(Yroi(:)==r) = 1;
     Vout = Vroi;
     Vout.dt(1) = spm_type('uint16');
     Vout.pinfo(1:2) = [1;0];
     Vout.fname = fullfile(roi_dir,[roilabels.label{r} '.nii']);
-    spm_write_vol(Vout,Yout)
+    spm_write_vol(Vout,Yout);
 end
 
 % Basic PPI analysis parameters
