@@ -31,7 +31,7 @@ roilabels.label = strrep(roilabels.label,' ','_');
 for r = 1:numel(roilabels)
     Yout = zeros(size(Yroi));
     Yout(Yroi(:)==r) = 1;
-    Vout = rmfield(Vroi,'pinfo');
+    Vout = Vroi;
     Vout.dt(1) = spm_type('uint16');
     Vout.pinfo(1:2) = [1;0];
     Vout.fname = fullfile(roi_dir,[roilabels.label{r} '.nii']);
