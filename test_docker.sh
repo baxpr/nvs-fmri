@@ -5,7 +5,7 @@ mkdir -p $(pwd -P)/OUTPUTS_smoothed
 podman run \
     --mount type=bind,src=$(pwd -P)/INPUTS,dst=/INPUTS \
     --mount type=bind,src=$(pwd -P)/OUTPUTS_smoothed,dst=/OUTPUTS \
-    nvs-fmri:test \
+    baxterprogers/nvs-fmri:test \
     --fmriprep1_dir /INPUTS/fmriprep1 \
     --fmriprep2_dir /INPUTS/fmriprep2 \
     --fmriprep3_dir /INPUTS/fmriprep3 \
@@ -20,7 +20,7 @@ mkdir -p $(pwd -P)/OUTPUTS_ppi
 podman run \
     --mount type=bind,src=$(pwd -P)/INPUTS,dst=/INPUTS \
     --mount type=bind,src=$(pwd -P)/OUTPUTS_ppi,dst=/OUTPUTS \
-    nvs-fmri:test \
+    baxterprogers/nvs-fmri:test \
     --fmriprep1_dir /INPUTS/fmriprep1 \
     --fmriprep2_dir /INPUTS/fmriprep2 \
     --fmriprep3_dir /INPUTS/fmriprep3 \
