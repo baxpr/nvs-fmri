@@ -27,6 +27,7 @@ if exist(outp.ppiroi_niigz,'file')
     ppi_processing_nvs(outp);
 else
     fprintf('PPI ROI file not found: %s\nSKIPPING PPI\n',outp.ppiroi_niigz)
+end
 
 % Exit
 if isdeployed
