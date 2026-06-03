@@ -23,7 +23,10 @@ spm('defaults','fmri');
 % Run the actual pipeline
 outp = fileprep_nvs(P.Results);
 first_level_stats_nvs(outp);
-ppi_processing_nvs(outp);
+if exist(outp.ppiroi_niigz,'file')
+    ppi_processing_nvs(outp);
+else
+    fprintf('PPI ROI file not found: %s\nSKIPPING PPI\n',outp.ppiroi_niigz)
 
 % Exit
 if isdeployed
