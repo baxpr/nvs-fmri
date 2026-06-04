@@ -37,9 +37,9 @@ fprintf('ALERT: USING TR OF %0.3f sec FROM FMRI NIFTI\n',tr)
 
 
 % Smooth fmriprep's fmri timeseries and get smoothed filenames
-fwhm_mm = str2double(inp.fwhm_mm);
+input_fwhm_mm = str2double(inp.input_fwhm_mm);
 
-if fwhm_mm>0
+if input_fwhm_mm>0
 
     clear sfmri_nii
     procr = 0;
@@ -47,7 +47,7 @@ if fwhm_mm>0
 
         clear matlabbatch
         matlabbatch{1}.spm.spatial.smooth.data = imgs(1);
-        matlabbatch{1}.spm.spatial.smooth.fwhm = [fwhm_mm fwhm_mm fwhm_mm];
+        matlabbatch{1}.spm.spatial.smooth.fwhm = [input_fwhm_mm input_fwhm_mm input_fwhm_mm];
         matlabbatch{1}.spm.spatial.smooth.dtype = 0;
         matlabbatch{1}.spm.spatial.smooth.im = 0;
         matlabbatch{1}.spm.spatial.smooth.prefix = 's';

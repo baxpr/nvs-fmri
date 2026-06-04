@@ -6,7 +6,8 @@ echo Running $(basename "${BASH_SOURCE}")
 
 # Initialize defaults
 export hpf_sec=300
-export fwhm_mm=6
+export input_fwhm_mm=0
+export ppi_fwhm_mm=6
 export ppiroi_niigz="none"
 export ppiroilabels_tsv="none"
 export ppi_subjlabel="subj"
@@ -22,7 +23,8 @@ while [[ $# -gt 0 ]]; do
         --fmriprep4_dir)     export fmriprep4_dir="${2}";     shift; shift ;;
         --eprime_txt)        export eprime_txt="${2}";        shift; shift ;;
         --hpf_sec)           export hpf_sec="${2}";           shift; shift ;;
-        --fwhm_mm)           export fwhm_mm="${2}";           shift; shift ;;
+        --input_fwhm_mm)     export input_fwhm_mm="${2}";     shift; shift ;;
+        --ppi_fwhm_mm)       export ppi_fwhm_mm="${2}";       shift; shift ;;
         --ppiroi_niigz)      export ppiroi_niigz="${2}";      shift; shift ;;
         --ppiroilabels_tsv)  export ppiroilabels_tsv="${2}";  shift; shift ;;
         --ppi_subjlabel)     export ppi_subjlabel="${2}";     shift; shift ;;
@@ -45,7 +47,8 @@ run_spm8.sh "${MATLAB_RUNTIME}" function matlab_entrypoint \
     ppiroilabels_tsv "${ppiroilabels_tsv}" \
     ppi_subjlabel "${ppi_subjlabel}" \
     hpf_sec "${hpf_sec}" \
-    fwhm_mm "${fwhm_mm}" \
+    input_fwhm_mm "${input_fwhm_mm}" \
+    ppi_fwhm_mm "${ppi_fwhm_mm}" \
     out_dir "${out_dir}"
 
 # Freeview-based PDF creation

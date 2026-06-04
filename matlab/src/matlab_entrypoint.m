@@ -11,7 +11,8 @@ addOptional(P,'ppiroi_niigz','space-MNI152NLin6Asym_atlas-BNST_dseg.nii.gz')
 addOptional(P,'ppiroilabels_tsv','atlas-BNST_dseg.tsv')
 addOptional(P,'ppi_subjlabel','subj')
 addOptional(P,'hpf_sec','300')
-addOptional(P,'fwhm_mm','6')
+addOptional(P,'input_fwhm_mm','0')
+addOptional(P,'ppi_fwhm_mm','6')
 addOptional(P,'out_dir','/OUTPUTS');
 parse(P,varargin{:});
 disp(P.Results)
