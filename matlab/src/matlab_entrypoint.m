@@ -30,6 +30,9 @@ else
     fprintf('PPI ROI file not found: %s\nSKIPPING PPI\n',outp.ppiroi_niigz)
 end
 
+% FIXME
+% Smooth con images in the PPI dirs at ppi_fwhm_mm
+
 % Exit
 if isdeployed
 	exit
