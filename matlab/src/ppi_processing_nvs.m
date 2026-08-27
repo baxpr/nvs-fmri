@@ -10,6 +10,11 @@ spm_dir = fullfile(inp.out_dir,['spm_' tag]);
 ppiroi_niigz = which(inp.ppiroi_niigz);
 ppiroilabels_tsv = which(inp.ppiroilabels_tsv);
 
+%% !! FIXME !!
+% Clip VOIs to the SPM first-level mask to avoid PPI errors.
+% Force the fmriprep mask as the SPM first-level mask? Intersection over
+% runs? SPM mask is a bit smaller.
+
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitizing ROI names
 roi_dir = fullfile(inp.out_dir,['roiwkdir_' tag]);
@@ -62,7 +67,7 @@ for r = 1:height(roilabels)
         'FLmask', 0, ...
         'CompContrasts', 1, ...
         'Weighted', 0, ...
-        'SPMver', '12', ...
+        'SPMver', '8', ...
         'preservevarcorr', 1 ...
         );
 
@@ -98,5 +103,5 @@ for r = 1:height(roilabels)
 
     end
 
-    
+
 end
