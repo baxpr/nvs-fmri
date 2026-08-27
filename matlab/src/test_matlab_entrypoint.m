@@ -2,6 +2,7 @@
 % very useful for making sure it works before we bother to compile.
 
 addpath(pwd)
+addpath([pwd '/../external/spm8_r6313/spm8'])
 addpath([pwd '/../../rois'])
 
 matlab_entrypoint( ...
