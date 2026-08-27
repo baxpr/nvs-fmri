@@ -81,9 +81,12 @@ delete(fullfile(inp.out_dir,'mask*.nii.gz'));
 
 % Combine masks across runs
 Vmask = spm_vol(mask_nii);
-spm_check_orientations(Vmask);
-Ymask = spm_read_vols(Vmask);
-
+Ymask = spm_read_vols(cell2mat(Vmask'));
+Ymask = sum(Ymask,4)==4;
+Vmaskall = Vmask{1};
+Vmaskall.pinfo(1:2) = [1; 0];
+Vmaskall.fname = fullfile(inp.out_dir,'mask_all.nii');
+spm_write_vol(Vmaskall, Ymask);
 
 % Also the T1
 niigzD = dir([inp.(['fmriprep' num2str(procr_scan(1)) '_dir']) ...
@@ -100,6 +103,7 @@ delete(fullfile(inp.out_dir,'t1.nii.gz'));
 % Outputs for next step
 outp = struct( ...
     'fmri_nii', {fmri_nii}, ...
+    'mask_nii', {Vmaskall.fname}, ...
     'motpar_txt', {motpar_txt}, ...
     'timings', {finaltimings}, ...
     'hpf_sec', inp.hpf_sec, ...

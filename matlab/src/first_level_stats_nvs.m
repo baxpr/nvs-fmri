@@ -78,7 +78,8 @@ matlabbatch{1}.spm.stats.fmri_spec.bases.hrf.derivs = [0 0];
 matlabbatch{1}.spm.stats.fmri_spec.volt = 1;
 matlabbatch{1}.spm.stats.fmri_spec.global = 'None';
 matlabbatch{1}.spm.stats.fmri_spec.mthresh = -Inf;
-matlabbatch{1}.spm.stats.fmri_spec.mask = {[spm('dir') '/tpm/mask_ICV.nii']};
+matlabbatch{1}.spm.stats.fmri_spec.mask = {mask_nii};
+matlabbatch{1}.spm.stats.fmri_spec.masking.im = 0;
 matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
 
 for procr = 1:nprocruns
