@@ -73,13 +73,15 @@ for scanr = 1:4
     end
 end
 
-% Unzip fmris for SPM
+% Unzip fmris, masks for SPM
 gunzip(fullfile(inp.out_dir,'fmri*.nii.gz'));
 delete(fullfile(inp.out_dir,'fmri*.nii.gz'));
+gunzip(fullfile(inp.out_dir,'mask*.nii.gz'));
+delete(fullfile(inp.out_dir,'mask*.nii.gz'));
 
 % Combine masks across runs
-spm_check_orientations(mask_nii);
 Vmask = spm_vol(mask_nii);
+spm_check_orientations(Vmask);
 Ymask = spm_read_vols(Vmask);
 
 
