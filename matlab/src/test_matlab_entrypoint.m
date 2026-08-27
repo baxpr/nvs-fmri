@@ -3,6 +3,7 @@
 
 addpath(pwd)
 addpath([pwd '/../external/spm8_r6313/spm8'])
+addpath([pwd '/../external/spm8_r6313/spm8/toolbox/PPPI'])
 addpath([pwd '/../../rois'])
 
 matlab_entrypoint( ...
