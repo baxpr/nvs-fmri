@@ -7,12 +7,12 @@ addOptional(P,'fmriprep2_dir','/INPUTS/fmriprep2')
 addOptional(P,'fmriprep3_dir','/INPUTS/fmriprep3')
 addOptional(P,'fmriprep4_dir','/INPUTS/fmriprep4')
 addOptional(P,'eprime_csv','/OUTPUTS/eprime.csv')
-addOptional(P,'ppiroi_niigz','space-MNI152NLin6Asym_atlas-BNST_dseg.nii.gz')
-addOptional(P,'ppiroilabels_tsv','atlas-BNST_dseg.tsv')
+addOptional(P,'ppiroi_niigz','space-MNI152NLin6Asym_atlas-BNSTamyg_dseg.nii.gz')
+addOptional(P,'ppiroilabels_tsv','atlas-BNSTamyg_dseg.tsv')
 addOptional(P,'ppi_subjlabel','subj')
 addOptional(P,'hpf_sec','300')
 addOptional(P,'input_fwhm_mm','0')
-addOptional(P,'ppi_fwhm_mm','6')
+addOptional(P,'ppicon_fwhm_mm','6')
 addOptional(P,'out_dir','/OUTPUTS');
 parse(P,varargin{:});
 disp(P.Results)
@@ -29,9 +29,6 @@ if exist(outp.ppiroi_niigz,'file')
 else
     fprintf('PPI ROI file not found: %s\nSKIPPING PPI\n',outp.ppiroi_niigz)
 end
-
-% FIXME
-% Smooth con images in the PPI dirs at ppi_fwhm_mm
 
 % Exit
 if isdeployed

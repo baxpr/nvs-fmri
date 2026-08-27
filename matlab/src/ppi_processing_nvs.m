@@ -92,4 +92,11 @@ for r = 1:height(roilabels)
     save(ppi_confmat,'P')
     PPPI(ppi_confmat)
 
+    % Find PPI dir and smooth con? images at inp.ppicon_fwhm_mm
+    ppicon_fwhm_mm = str2double(inp.ppicon_fwhm_mm);
+    if ppicon_fwhm_mm>0
+
+    end
+
+    
 end
