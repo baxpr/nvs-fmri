@@ -61,7 +61,7 @@ if input_fwhm_mm>0
 
 else  % No smoothing
 
-    smri_nii = inp.fmri_nii;
+    sfmri_nii = inp.fmri_nii;
 
 end
     
