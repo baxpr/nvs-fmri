@@ -12,8 +12,6 @@ ppiroilabels_tsv = which(inp.ppiroilabels_tsv);
 
 %% !! FIXME !!
 % Clip VOIs to the SPM first-level mask to avoid PPI errors.
-% Force the fmriprep mask as the SPM first-level mask? Intersection over
-% runs? SPM mask is a bit smaller.
 
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitizing ROI names
