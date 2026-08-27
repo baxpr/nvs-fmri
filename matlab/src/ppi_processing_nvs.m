@@ -126,10 +126,10 @@ for r = 1:height(roilabels)
         D = dir([P.directory filesep P.Region filesep 'con*.img']);
         con_imgs = vertcat(D.name);
         fprintf('Smoothing %d contrasts images for %s\n',size(con_imgs,1),P.Region);
-        for imgk = size(con_imgs,1)
+        for imgk = 1:size(con_imgs,1)
 
             clear matlabbatch
-            matlabbatch{1}.spm.spatial.smooth.data = {con_imgs(k,:)};
+            matlabbatch{1}.spm.spatial.smooth.data = {con_imgs(imgk,:)};
             matlabbatch{1}.spm.spatial.smooth.fwhm = [ppicon_fwhm_mm ppicon_fwhm_mm ppicon_fwhm_mm];
             matlabbatch{1}.spm.spatial.smooth.dtype = 0;
             matlabbatch{1}.spm.spatial.smooth.im = 0;
