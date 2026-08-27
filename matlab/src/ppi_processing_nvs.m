@@ -11,7 +11,8 @@ ppiroi_niigz = which(inp.ppiroi_niigz);
 ppiroilabels_tsv = which(inp.ppiroilabels_tsv);
 
 %% !! FIXME !!
-% Clip VOIs to the SPM first-level mask to avoid PPI errors.
+% Clip VOIs to the SPM first-level mask to avoid PPI errors. First step is
+% to resample the ROI image to the mask grid.
 
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitizing ROI names
@@ -123,7 +124,7 @@ for r = 1:height(roilabels)
     ppicon_fwhm_mm = str2double(inp.ppicon_fwhm_mm);
     if ppicon_fwhm_mm>0
 
-        D = dir([P.directory filesep P.Region filesep 'con*.img']);
+        D = dir([P.directory filesep 'PPI_' P.Region filesep 'con*.img']);
         con_imgs = vertcat(D.name);
         fprintf('Smoothing %d contrasts images for %s\n',size(con_imgs,1),P.Region);
         for imgk = 1:size(con_imgs,1)
