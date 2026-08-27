@@ -25,7 +25,7 @@ timings = get_timings(inp.eprime_csv);
 % procr is the run for the processing, with missing ones skipped
 
 % Scale motion params and save in SPM friendly format
-clear procr_scan motpar_txt fmri_nii meanfmri_nii finaltimings
+clear procr_scan motpar_txt fmri_nii meanfmri_nii mask_nii finaltimings
 procr = 0;
 for scanr = 1:4
     fmriprep_dir = inp.(['fmriprep' num2str(scanr) '_dir']);
@@ -43,6 +43,7 @@ for scanr = 1:4
         motpar_txt{procr} = fullfile(inp.out_dir,['motpar' num2str(scanr) '.txt']);
         writematrix(mot, motpar_txt{procr})
 
+        % Preprocessed fmri
         niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-MNI152NLin6Asym_desc-preproc_bold.nii.gz']);
         fmri_nii{procr} = fullfile(inp.out_dir,['fmri' num2str(scanr) '.nii']);
         copyfile( ...
@@ -50,6 +51,7 @@ for scanr = 1:4
             [fmri_nii{procr} '.gz'] ...
             );
         
+        % Mean fmri
         niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-MNI152NLin6Asym_boldref.nii.gz']);
         meanfmri_nii{procr} = fullfile(inp.out_dir,['meanfmri' num2str(scanr) '.nii']);
         copyfile( ...
@@ -57,14 +59,28 @@ for scanr = 1:4
             [meanfmri_nii{procr} '.gz'] ...
             );
 
+        % fmri mask
+        niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-MNI152NLin6Asym_desc-brain_mask.nii.gz']);
+        mask_nii{procr} = fullfile(inp.out_dir,['mask' num2str(scanr) '.nii']);
+        copyfile( ...
+            fullfile(niigzD(1).folder,niigzD(1).name), ...
+            [mask_nii{procr} '.gz'] ...
+            );
+
+        % Rearrange timings to match image sets
         finaltimings{procr} = timings{scanr};
 
     end
 end
 
+% Unzip fmris for SPM
 gunzip(fullfile(inp.out_dir,'fmri*.nii.gz'));
 delete(fullfile(inp.out_dir,'fmri*.nii.gz'));
 
+% Combine masks across runs
+spm_check_orientations(mask_nii);
+Vmask = spm_vol(mask_nii);
+Ymask = spm_read_vols(Vmask);
 
 
 % Also the T1
