@@ -83,27 +83,60 @@ for r = 1:height(roilabels)
     P.Weights = [];
 
     % Contrasts, one per task
-    for c = 2:numel(P.Tasks)
-        P.Contrasts(c-1) = struct( ...
-            'left', {P.Tasks(c)}, ...
+    for c = 1:numel(P.Tasks)-1
+        P.Contrasts(c) = struct( ...
+            'left', {P.Tasks(c+1)}, ...
             'right', {{'none'}}, ...
             'STAT', 'T' ...
             );
     end
 
+    % Additional desired contrasts
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'CueFear'}},'right',{{'CueNeutral'}},'STAT','T');
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'CueUnknown'}},'right',{{'CueNeutral'}},'STAT','T');
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'CueUnknown'}},'right',{{'CueFear'}},'STAT','T');
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'ImageFear'}},'right',{{'ImageNeutral'}},'STAT','T');
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'ImageUnknownNeutral','ImageUnknownFear'}},'right',{{'ImageNeutral'}},'STAT','T');
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'ImageUnknownNeutral','ImageUnknownFear'}},'right',{{'ImageFear'}},'STAT','T');
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'ImageUnknownNeutral'}},'right',{{'ImageNeutral'}},'STAT','T');
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'ImageUnknownFear'}},'right',{{'ImageNeutral'}},'STAT','T');
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'ImageUnknownNeutral'}},'right',{{'ImageFear'}},'STAT','T');
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'ImageUnknownFear'}},'right',{{'ImageFear'}},'STAT','T');
+    c = c + 1;
+    P.Contrasts(c) = struct('left',{{'ImageUnknownFear'}},'right',{{'ImageUnknownNeutral'}},'STAT','T');
+
     ppi_confmat = fullfile(spm_dir,['PPI_config_' roilabels.label{r} '.mat']);
     save(ppi_confmat,'P')
     PPPI(ppi_confmat)
 
-    % Find PPI dir and smooth con? images at inp.ppicon_fwhm_mm
-    ppi_dir = [P.directory filesep P.Region];
+    % Find PPI dir and smooth con images at inp.ppicon_fwhm_mm
     ppicon_fwhm_mm = str2double(inp.ppicon_fwhm_mm);
     if ppicon_fwhm_mm>0
 
-        %% FIXME
-        % Find con? images in ppi_dir and smooth them
+        D = dir([P.directory filesep P.Region filesep 'con*.img']);
+        con_imgs = vertcat(D.name);
+        fprintf('Smoothing %d contrasts images for %s\n',size(con_imgs,1),P.Region);
+        for imgk = size(con_imgs,1)
 
+            clear matlabbatch
+            matlabbatch{1}.spm.spatial.smooth.data = {con_imgs(k,:)};
+            matlabbatch{1}.spm.spatial.smooth.fwhm = [ppicon_fwhm_mm ppicon_fwhm_mm ppicon_fwhm_mm];
+            matlabbatch{1}.spm.spatial.smooth.dtype = 0;
+            matlabbatch{1}.spm.spatial.smooth.im = 0;
+            matlabbatch{1}.spm.spatial.smooth.prefix = 's';
+            spm_jobman('run',matlabbatch);
+
+        end
     end
-
 
 end
