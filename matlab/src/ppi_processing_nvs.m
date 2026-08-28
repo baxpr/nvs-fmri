@@ -10,9 +10,11 @@ spm_dir = fullfile(inp.out_dir,['spm_' tag]);
 ppiroi_niigz = which(inp.ppiroi_niigz);
 ppiroilabels_tsv = which(inp.ppiroilabels_tsv);
 
-
 % Clip VOIs to the SPM first-level mask to avoid PPI errors. First step is
 % to resample the ROI image to the mask grid.
+[p,n,e] = fileparts(ppiroi_niigz);
+gunzip(ppiroi_niigz);
+ppiroi_nii = fullfile(p,[n '.nii']);
 flags = struct( ...
     'interp',0, ...
     'which',1, ...
@@ -20,16 +22,15 @@ flags = struct( ...
     'wrap',[0 0 0], ...
     'mask',0 ...
     );
-spm_reslice(char(inp.mask_nii, ppiroi_niigz), flags);
-[p,n,e] = fileparts(ppiroi_niigz);
-rppiroi_niigz = fullfile(p, ['r' n e]);
+spm_reslice(char(inp.mask_nii, ppiroi_nii), flags);
+rppiroi_nii = fullfile(p, ['r' n e]);
 
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitizing ROI names
 roi_dir = fullfile(inp.out_dir,['roiwkdir_' tag]);
 mkdir(roi_dir);
-copyfile(rppiroi_niigz,roi_dir)
-[~,n,e] = fileparts(rppiroi_niigz);
+copyfile(rppiroi_nii,roi_dir)
+[~,n,e] = fileparts(rppiroi_nii);
 gunzip(fullfile(roi_dir,[n e]))
 rppiroi_nii = fullfile(roi_dir,n);
 
