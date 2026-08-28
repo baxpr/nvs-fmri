@@ -14,7 +14,7 @@ ppiroilabels_tsv = which(inp.ppiroilabels_tsv);
 % to resample the ROI image to the mask grid.
 [p,n,e] = fileparts(ppiroi_niigz);
 gunzip(ppiroi_niigz);
-ppiroi_nii = fullfile(p,[n '.nii']);
+ppiroi_nii = fullfile(p,n);
 flags = struct( ...
     'interp',0, ...
     'which',1, ...
@@ -23,7 +23,7 @@ flags = struct( ...
     'mask',0 ...
     );
 spm_reslice(char(inp.mask_nii, ppiroi_nii), flags);
-rppiroi_nii = fullfile(p, ['r' n e]);
+rppiroi_nii = fullfile(p, ['r' n]);
 
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitizing ROI names
