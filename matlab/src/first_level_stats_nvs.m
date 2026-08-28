@@ -55,7 +55,7 @@ if input_fwhm_mm>0
 
         [~,n,e] = fileparts(imgs{1});
         procr = procr + 1;
-        sfmri_nii{procr} = fullfile(inp.out_dir,['s' num2str(input_fwhm_mm) n e]);
+        sfmri_nii{procr} = fullfile(inp.out_dir,['s' n e]);
 
     end
 

@@ -149,7 +149,7 @@ for r = 1:height(roilabels)
             matlabbatch{1}.spm.spatial.smooth.fwhm = [ppicon_fwhm_mm ppicon_fwhm_mm ppicon_fwhm_mm];
             matlabbatch{1}.spm.spatial.smooth.dtype = 0;
             matlabbatch{1}.spm.spatial.smooth.im = 0;
-            matlabbatch{1}.spm.spatial.smooth.prefix = 's';
+            matlabbatch{1}.spm.spatial.smooth.prefix = ['s' num2str(ppicon_fwhm_mm)];
             spm_jobman('run',matlabbatch);
 
         end
