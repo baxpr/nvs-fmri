@@ -61,7 +61,7 @@ for scanr = 1:4
 
         % fmri mask
         niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-MNI152NLin6Asym_desc-brain_mask.nii.gz']);
-        mask_nii{procr} = fullfile(inp.out_dir,['mask' num2str(scanr) '.nii']);
+        mask_nii{procr} = fullfile(inp.out_dir,['fmriprep_mask' num2str(scanr) '.nii']);
         copyfile( ...
             fullfile(niigzD(1).folder,niigzD(1).name), ...
             [mask_nii{procr} '.gz'] ...
@@ -76,8 +76,8 @@ end
 % Unzip fmris, masks for SPM
 gunzip(fullfile(inp.out_dir,'fmri*.nii.gz'));
 delete(fullfile(inp.out_dir,'fmri*.nii.gz'));
-gunzip(fullfile(inp.out_dir,'mask*.nii.gz'));
-delete(fullfile(inp.out_dir,'mask*.nii.gz'));
+gunzip(fullfile(inp.out_dir,'fmriprep_mask*.nii.gz'));
+delete(fullfile(inp.out_dir,'fmriprep_mask*.nii.gz'));
 
 % Combine masks across runs
 Vmask = spm_vol(mask_nii);
@@ -85,7 +85,7 @@ Ymask = spm_read_vols(cell2mat(Vmask'));
 Ymask = sum(Ymask,4)==4;
 Vmaskall = Vmask{1};
 Vmaskall.pinfo(1:2) = [1; 0];
-Vmaskall.fname = fullfile(inp.out_dir,'mask_all.nii');
+Vmaskall.fname = fullfile(inp.out_dir,'fmriprep_mask_all.nii');
 spm_write_vol(Vmaskall, Ymask);
 
 % Also the T1
@@ -103,7 +103,7 @@ delete(fullfile(inp.out_dir,'t1.nii.gz'));
 % Outputs for next step
 outp = struct( ...
     'fmri_nii', {fmri_nii}, ...
-    'mask_nii', {Vmaskall.fname}, ...
+    'fmriprep_mask_nii', {Vmaskall.fname}, ...
     'motpar_txt', {motpar_txt}, ...
     'timings', {finaltimings}, ...
     'hpf_sec', inp.hpf_sec, ...

@@ -28,7 +28,7 @@ flags = struct( ...
     'wrap',[0 0 0], ...
     'mask',0 ...
     );
-spm_reslice(char(inp.mask_nii, ppiroi_nii), flags);
+spm_reslice(char(inp.fmrirep_mask_nii, ppiroi_nii), flags);
 [p,n,e] = fileparts(ppiroi_nii);
 rppiroi_nii = fullfile(p, ['r' n e]);
 
@@ -37,7 +37,7 @@ rppiroi_nii = fullfile(p, ['r' n e]);
 disp('Splitting ROI file')
 
 % Load ROIs and cross-check values
-Vmask = spm_vol(inp.mask_nii);
+Vmask = spm_vol(inp.fmriprep_mask_nii);
 Ymask = spm_read_vols(Vmask);
 Vroi = spm_vol(rppiroi_nii);
 Yroi = spm_read_vols(Vroi);
@@ -51,7 +51,7 @@ end
 % Sanitize ROI labels
 roilabels.label = strrep(roilabels.label,' ','_');
 
-% Write individual ROI files, applying fmri mask
+% Write individual ROI files, applying fmriprep mask
 for r = 1:height(roilabels)
     Yout = zeros(size(Yroi));
     Yout(Yroi(:)==r & Ymask(:)>0) = 1;
