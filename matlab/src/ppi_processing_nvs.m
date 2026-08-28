@@ -35,9 +35,6 @@ rppiroi_nii = fullfile(p, ['r' n e]);
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitizing ROI names
 disp('Splitting ROI file')
-[~,n,e] = fileparts(rppiroi_nii);
-gunzip(fullfile(roi_dir,[n e]))
-rppiroi_nii = fullfile(roi_dir,n);
 
 % Load ROIs and cross-check values
 Vmask = spm_vol(inp.mask_nii);
