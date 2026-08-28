@@ -10,21 +10,33 @@ spm_dir = fullfile(inp.out_dir,['spm_' tag]);
 ppiroi_niigz = which(inp.ppiroi_niigz);
 ppiroilabels_tsv = which(inp.ppiroilabels_tsv);
 
-%% !! FIXME !!
+
 % Clip VOIs to the SPM first-level mask to avoid PPI errors. First step is
 % to resample the ROI image to the mask grid.
+flags = struct( ...
+    'interp',0, ...
+    'which',1, ...
+    'mean',0, ...
+    'wrap',[0 0 0], ...
+    'mask',0 ...
+    );
+spm_reslice(char(inp.mask_nii, ppiroi_niigz), flags);
+[p,n,e] = fileparts(ppiroi_niigz);
+rppiroi_niigz = fullfile(p, ['r' n e]);
 
 % Split the ROI file into individual images for PPI -
 % Load, split into individual images for gppi, sanitizing ROI names
 roi_dir = fullfile(inp.out_dir,['roiwkdir_' tag]);
 mkdir(roi_dir);
-copyfile(ppiroi_niigz,roi_dir)
-[~,n,e] = fileparts(ppiroi_niigz);
+copyfile(rppiroi_niigz,roi_dir)
+[~,n,e] = fileparts(rppiroi_niigz);
 gunzip(fullfile(roi_dir,[n e]))
-ppiroi_nii = fullfile(roi_dir,n);
+rppiroi_nii = fullfile(roi_dir,n);
 
 % Load ROIs and cross-check values
-Vroi = spm_vol(ppiroi_nii);
+Vmask = spm_vol(inp.mask_nii);
+Ymask = spm_read_vols(Vmask);
+Vroi = spm_vol(rppiroi_nii);
 Yroi = spm_read_vols(Vroi);
 roiinds = unique(Yroi(:));
 roiinds = roiinds(roiinds~=0);
@@ -36,10 +48,10 @@ end
 % Sanitize ROI labels
 roilabels.label = strrep(roilabels.label,' ','_');
 
-% Write individual ROI files
+% Write individual ROI files, applying fmri mask
 for r = 1:height(roilabels)
     Yout = zeros(size(Yroi));
-    Yout(Yroi(:)==r) = 1;
+    Yout(Yroi(:)==r & Ymask(:)>0) = 1;
     Vout = Vroi;
     Vout.dt(1) = spm_type('uint16');
     Vout.pinfo(1:2) = [1;0];
