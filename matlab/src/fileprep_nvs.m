@@ -76,8 +76,6 @@ end
 % Unzip fmris, masks for SPM
 gunzip(fullfile(inp.out_dir,'fmri*.nii.gz'));
 delete(fullfile(inp.out_dir,'fmri*.nii.gz'));
-gunzip(fullfile(inp.out_dir,'fmriprep_mask*.nii.gz'));
-delete(fullfile(inp.out_dir,'fmriprep_mask*.nii.gz'));
 
 % Combine masks across runs
 Vmask = spm_vol(mask_nii);
