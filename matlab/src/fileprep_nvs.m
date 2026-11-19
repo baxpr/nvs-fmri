@@ -77,10 +77,10 @@ end
 gunzip(fullfile(inp.out_dir,'fmri*.nii.gz'));
 delete(fullfile(inp.out_dir,'fmri*.nii.gz'));
 
-% Combine masks across runs
+% Combine masks across runs - union, not intersection, for generosity
 Vmask = spm_vol(mask_nii);
 Ymask = spm_read_vols(cell2mat(Vmask'));
-Ymask = sum(Ymask,4)==4;
+Ymask = sum(Ymask,4)>0;
 Vmaskall = Vmask{1};
 Vmaskall.pinfo(1:2) = [1; 0];
 Vmaskall.fname = fullfile(inp.out_dir,'fmriprep_mask_all.nii');
