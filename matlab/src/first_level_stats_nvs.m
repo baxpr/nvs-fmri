@@ -269,10 +269,10 @@ end
 
 
 %% Review design
-matlabbatch{4}.spm.stats.review.spmmat = ...
-	matlabbatch{2}.spm.stats.fmri_est.spmmat;
-matlabbatch{4}.spm.stats.review.display.matrix = 1;
-matlabbatch{4}.spm.stats.review.print = false;
+matlabbatch{4}.cfg_basicio.run_ops.call_matlab.fun = 'spm8_show_design';
+matlabbatch{4}.cfg_basicio.run_ops.call_matlab.inputs{1}.string = ...
+    matlabbatch{2}.spm.stats.fmri_est.spmmat{1};
+matlabbatch{4}.cfg_basicio.run_ops.call_matlab.outputs = cell(1,0);
 
 matlabbatch{5}.cfg_basicio.run_ops.call_matlab.inputs{1}.string = ...
         fullfile(inp.out_dir,['first_level_design_' tag '.png']);
