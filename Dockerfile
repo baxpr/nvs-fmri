@@ -1,5 +1,5 @@
 # Start with FSL, ImageMagick, python3/pandas, xvfb base docker
-FROM baxterprogers/fsl-base:v6.0.5.2
+FROM docker.io:baxterprogers/fsl-base:v6.0.5.2
 
 # Matlab reqs
 RUN apt-get -y update && \
