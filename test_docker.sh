@@ -10,7 +10,7 @@ podman run \
     --fmriprep2_dir /INPUTS/fmriprep2 \
     --fmriprep3_dir /INPUTS/fmriprep3 \
     --fmriprep4_dir /INPUTS/fmriprep4 \
-    --eprime_csv /INPUTS/eprime.csv \
+    --eprime_txt /INPUTS/eprime.txt \
     --ppiroi_niigz atlas-BNSTamyg_space-MNI152NLin6Asym_dseg.nii.gz \
     --ppiroilabels_tsv atlas-BNSTamyg_dseg.tsv \
     --hpf_sec 300 \
