@@ -42,7 +42,7 @@ done
 eprime_to_csv.py -o "${out_dir}"/eprime.csv "${eprime_txt}"
 
 # Run the matlab pipeline in xvfb
-run_spm8.sh "${MATLAB_RUNTIME}" function matlab_entrypoint \
+run_spm8.sh "${MATLAB_RUNTIME}" cmdline matlab_entrypoint \
     fmriprep1_dir "${fmriprep1_dir}" \
     fmriprep2_dir "${fmriprep2_dir}" \
     fmriprep3_dir "${fmriprep3_dir}" \
