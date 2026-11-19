@@ -17,7 +17,7 @@ podman run \
     --mask_dilate_voxels 1 \
     --atlas_space MNI152NLin6Asym \
     --input_fwhm_mm 0 \
-    --ppi_fwhm_mm 4 \
+    --ppicon_fwhm_mm 4 \
     --out_dir /OUTPUTS
 
 
