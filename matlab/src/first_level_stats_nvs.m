@@ -268,18 +268,6 @@ for k = 1:numc
 end
 
 
-%% Review design
-matlabbatch{4}.cfg_basicio.run_ops.call_matlab.fun = 'spm8_show_design';
-matlabbatch{4}.cfg_basicio.run_ops.call_matlab.inputs{1}.string = ...
-    matlabbatch{2}.spm.stats.fmri_est.spmmat{1};
-matlabbatch{4}.cfg_basicio.run_ops.call_matlab.outputs = cell(1,0);
-
-matlabbatch{5}.cfg_basicio.run_ops.call_matlab.fun = 'spm_window_print';
-matlabbatch{5}.cfg_basicio.run_ops.call_matlab.inputs{1}.string = ...
-    fullfile(inp.out_dir,['first_level_design_' tag '.png']);
-matlabbatch{5}.cfg_basicio.run_ops.call_matlab.outputs = cell(1,0);
-
-
 %% Save batch and run
 save(fullfile(inp.out_dir,['spmbatch_first_level_stats_' tag '.mat']),'matlabbatch')
 spm_jobman('run',matlabbatch);
@@ -299,7 +287,26 @@ end
 writetable(connames,fullfile(inp.out_dir,['spm_contrast_names_' tag '.csv']));
 
 
+%% Design matrix overview
+disp('Design matrix overview')
+SPMmat = fullfile(matlabbatch{1}.spm.stats.fmri_spec.dir{1}, 'SPM.mat');
+S = load(SPMmat);
+SPM = S.SPM;
+
+F = spm_figure('GetWin','Graphics');
+spm_figure('Clear',F);
+figure(F);
+
+spm_DesRep('DesMtx', SPM.xX);
+
+drawnow; pause(0.1);
+
+spm_window_print(fullfile(inp.out_dir, ['first_level_design_' tag '.png']));
+
+
 %% Results display
+disp('Results display')
+
 % Needed to create the spmT even if we don't get the figure window
 xSPM = struct( ...
     'swd', matlabbatch{1}.spm.stats.fmri_spec.dir, ...
