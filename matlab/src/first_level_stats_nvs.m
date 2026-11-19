@@ -274,10 +274,10 @@ matlabbatch{4}.cfg_basicio.run_ops.call_matlab.inputs{1}.string = ...
     matlabbatch{2}.spm.stats.fmri_est.spmmat{1};
 matlabbatch{4}.cfg_basicio.run_ops.call_matlab.outputs = cell(1,0);
 
-matlabbatch{5}.cfg_basicio.run_ops.call_matlab.inputs{1}.string = ...
-        fullfile(inp.out_dir,['first_level_design_' tag '.png']);
-matlabbatch{5}.cfg_basicio.run_ops.call_matlab.outputs = cell(1,0);
 matlabbatch{5}.cfg_basicio.run_ops.call_matlab.fun = 'spm_window_print';
+matlabbatch{5}.cfg_basicio.run_ops.call_matlab.inputs{1}.string = ...
+    fullfile(inp.out_dir,['first_level_design_' tag '.png']);
+matlabbatch{5}.cfg_basicio.run_ops.call_matlab.outputs = cell(1,0);
 
 
 %% Save batch and run
