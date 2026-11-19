@@ -19,3 +19,7 @@ Deleted file (blocks compilation)
 Deleted directories (block compilation)
    spm8/external/fieldtrip
    spm8/external/yokagawa
+
+Added 'function' option backported from SPM12
+   spm8/spm_standalone.m
+

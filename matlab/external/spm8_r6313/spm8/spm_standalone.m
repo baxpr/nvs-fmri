@@ -44,6 +44,20 @@ switch lower(action)
             spm('run',varargin{2});
         end
         
+    case 'function'  % Backported functionality from SPM12
+    %----------------------------------------------------------------------
+        spm_banner;
+        if nargin == 1
+            fcn = spm_input('function name','!+1','s','');
+        else
+            fcn = varargin{2};
+        end
+        try
+            feval(fcn,varargin{3:end});
+        catch
+            exit_code = 1;
+        end
+
     otherwise
     %----------------------------------------------------------------------
         spm(varargin{:});

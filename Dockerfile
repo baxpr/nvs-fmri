@@ -33,7 +33,7 @@ COPY README.md /opt/nvs-fmri/README.md
 ENV PATH /opt/nvs-fmri/src:/opt/nvs-fmri/matlab/bin:${PATH}
 
 # Matlab executable must be run at build to extract the CTF archive
-RUN run_spm8.sh ${MATLAB_RUNTIME} cmdline quit
+RUN run_spm8.sh ${MATLAB_RUNTIME} function quit
 
 # Entrypoint
 ENTRYPOINT ["xwrapper.sh","pipeline_entrypoint.sh"]
