@@ -44,7 +44,7 @@ for scanr = 1:4
         writematrix(mot, motpar_txt{procr})
 
         % Preprocessed fmri
-        niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-MNI152NLin6Asym_desc-preproc_bold.nii.gz']);
+        niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-' inp.atlas_space '_desc-preproc_bold.nii.gz']);
         fmri_nii{procr} = fullfile(inp.out_dir,['fmri' num2str(scanr) '.nii']);
         copyfile( ...
             fullfile(niigzD(1).folder,niigzD(1).name), ...
@@ -52,7 +52,7 @@ for scanr = 1:4
             );
         
         % Mean fmri
-        niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-MNI152NLin6Asym_boldref.nii.gz']);
+        niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-' inp.atlas_space '_boldref.nii.gz']);
         meanfmri_nii{procr} = fullfile(inp.out_dir,['meanfmri' num2str(scanr) '.nii']);
         copyfile( ...
             fullfile(niigzD(1).folder,niigzD(1).name), ...
@@ -60,7 +60,7 @@ for scanr = 1:4
             );
 
         % fmri mask
-        niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-MNI152NLin6Asym_desc-brain_mask.nii.gz']);
+        niigzD = dir([fmriprep_dir '/sub*/ses*/func/*_space-' inp.atlas_space '_desc-brain_mask.nii.gz']);
         mask_nii{procr} = fullfile(inp.out_dir,['fmriprep_mask' num2str(scanr) '.nii']);
         copyfile( ...
             fullfile(niigzD(1).folder,niigzD(1).name), ...
@@ -81,14 +81,23 @@ delete(fullfile(inp.out_dir,'fmri*.nii.gz'));
 Vmask = spm_vol(mask_nii);
 Ymask = spm_read_vols(cell2mat(Vmask'));
 Ymask = sum(Ymask,4)>0;
+
+% Dilate the mask
+if inp.mask_dilate_voxels > 0
+    se = strel('sphere', str2num(inp.mask_dilate_voxels));
+    Ymask = imdilate(Ymask, se);
+end
+
+% Save mask to file
 Vmaskall = Vmask{1};
 Vmaskall.pinfo(1:2) = [1; 0];
 Vmaskall.fname = fullfile(inp.out_dir,'fmriprep_mask_all.nii');
 spm_write_vol(Vmaskall, Ymask);
 
+
 % Also the T1
 niigzD = dir([inp.(['fmriprep' num2str(procr_scan(1)) '_dir']) ...
-    '/sub*/ses*/anat/*_space-MNI152NLin6Asym_desc-preproc_T1w.nii.gz']);
+    '/sub*/ses*/anat/*_space-' inp.atlas_space '_desc-preproc_T1w.nii.gz']);
 atlasT1_nii = fullfile(inp.out_dir,'t1.nii');
 copyfile( ...
     fullfile(niigzD(1).folder,niigzD(1).name), ...

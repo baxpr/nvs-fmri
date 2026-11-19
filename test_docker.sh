@@ -11,11 +11,11 @@ podman run \
     --fmriprep3_dir /INPUTS/fmriprep3 \
     --fmriprep4_dir /INPUTS/fmriprep4 \
     --eprime_txt /INPUTS/eprime.txt \
-    --ppiroi_niigz space-MNI152NLin6Asym_atlas-BNST_dseg.nii.gz \
-    --ppiroilabels_tsv atlas-BNST_dseg.tsv \
+    --ppiroi_niigz atlas-BNSTamyg_space-MNI152NLin6Asym_dseg.nii.gz \
+    --ppiroilabels_tsv atlas-BNSTamyg_dseg.tsv \
     --hpf_sec 300 \
     --input_fwhm_mm 0 \
-    --ppi_fwhm_mm 6 \
+    --ppi_fwhm_mm 4 \
     --out_dir /OUTPUTS
 
 

@@ -11,8 +11,10 @@ addOptional(P,'ppiroi_niigz','space-MNI152NLin6Asym_atlas-BNSTamyg_dseg.nii.gz')
 addOptional(P,'ppiroilabels_tsv','atlas-BNSTamyg_dseg.tsv')
 addOptional(P,'ppi_subjlabel','subj')
 addOptional(P,'hpf_sec','300')
+addOptional(P,'mask_dilate_voxels','1')
+addOptional(P,'atlas_space','MNI152NLin6Asym')
 addOptional(P,'input_fwhm_mm','0')
-addOptional(P,'ppicon_fwhm_mm','6')
+addOptional(P,'ppicon_fwhm_mm','4')
 addOptional(P,'out_dir','/OUTPUTS');
 parse(P,varargin{:});
 disp(P.Results)
