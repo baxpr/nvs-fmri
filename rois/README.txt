@@ -6,8 +6,8 @@ doi:10.1016/j.neuroimage.2014.01.017
 
 
 
-NegVal15: See atlas-NegVal15_info.tsv
+NegVal19: See atlas-NegVal19_info.tsv
 
 
 
-BNSTamyg: Subset of NegVal15 with BNST and Amygdala
+BNSTamyg: Subset of NegVal19 with BNST and Amygdala
