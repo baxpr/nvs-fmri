@@ -52,11 +52,10 @@ switch lower(action)
         else
             fcn = varargin{2};
         end
-        try
-            feval(fcn,varargin{3:end});
-        catch
-            exit_code = 1;
-        end
+        fprintf('Calling function %s with args\n', fcn);
+        disp(varargin(3:end)');
+        feval(fcn,varargin{3:end});
+
 
     otherwise
     %----------------------------------------------------------------------
