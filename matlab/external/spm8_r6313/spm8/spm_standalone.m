@@ -46,7 +46,7 @@ switch lower(action)
         
     case 'function'  % Backported functionality from SPM12
     %----------------------------------------------------------------------
-        spm_banner;
+        spm('asciiwelcome');
         if nargin == 1
             fcn = spm_input('function name','!+1','s','');
         else
