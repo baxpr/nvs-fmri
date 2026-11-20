@@ -1,0 +1,108 @@
+# https://github.com/baxpr/nvs-fmri
+---
+procyamlversion: 3.0.0-dev.0
+containers:
+  - name: nvs-fmri
+    path: nvs-fmri_v3.0.0.sif
+    source: docker://baxterprogers/nvs-fmri:v3.0.0
+requirements:
+  walltime: 0-8
+  memory: 8G
+jobtemplate: job_template_v3.txt
+
+inputs:
+
+  xnat:
+
+    filters:
+      - type: match
+        inputs: scan_t1,fmriprep1/scan_t1
+      - type: match
+        inputs: scan_t1,fmriprep2/scan_t1
+      - type: match
+        inputs: scan_t1,fmriprep3/scan_t1
+      - type: match
+        inputs: scan_t1,fmriprep4/scan_t1
+      - type: match
+        inputs: scan_fmri1,fmriprep1/scan_fmri
+      - type: match
+        inputs: scan_fmri2,fmriprep2/scan_fmri
+      - type: match
+        inputs: scan_fmri3,fmriprep3/scan_fmri
+      - type: match
+        inputs: scan_fmri4,fmriprep4/scan_fmri
+
+    scans:
+
+      - name: scan_t1
+        types: 'cs_T1W_3D_TFE_32 channel'
+        skip_unusable: True
+
+      - name: scan_fmri1
+        types: Anticipation1
+        skip_unusable: True
+        resources:
+          - {resource: EPRIME_TXT, fmatch: '*.txt', fdest: eprime.txt}
+
+      - name: scan_fmri2
+        types: Anticipation2
+        skip_unusable: True
+
+      - name: scan_fmri3
+        types: Anticipation3
+        skip_unusable: True
+
+      - name: scan_fmri4
+        types: Anticipation4
+        skip_unusable: True
+
+
+    assessors:
+
+      - name: fmriprep1
+        proctypes: fmriprep-NVS-task-nodc_v23
+        resources:
+          - {resource: fmriprepBIDS, ftype: DIR, fdest: fmriprep1}
+      - name: fmriprep2
+        proctypes: fmriprep-NVS-task-nodc_v23
+        resources:
+          - {resource: fmriprepBIDS, ftype: DIR, fdest: fmriprep2}
+      - name: fmriprep3
+        proctypes: fmriprep-NVS-task-nodc_v23
+        resources:
+          - {resource: fmriprepBIDS, ftype: DIR, fdest: fmriprep3}
+      - name: fmriprep4
+        proctypes: fmriprep-NVS-task-nodc_v23
+        resources:
+          - {resource: fmriprepBIDS, ftype: DIR, fdest: fmriprep4}
+
+
+outputs:
+  - pdf: nvs-fmri.pdf
+  - {path: eprime.csv, type: FILE, resource: EPRIME_CSV}
+  - {path: mean_allfmri.nii.gz, type: FILE, resource: MEANFMRI}
+  - {path: spmbatch_first_level_stats_nvs.mat, type: FILE, resource: SPM_BATCH}
+  - {path: spm_nvs.tgz, type: FILE, resource: SPM_AND_PPI}
+  - {path: spm_contrast_names_nvs.csv, type: FILE, resource: SPM_CONTRAST_NAMES}
+  - {path: roiwkdir_nvs/ratlas-BNSTamyg_space-MNI152NLin6Asym_dseg.nii.gz, type: FILE, resource: PPI_SEED_ROIS}
+  - {path: roiwkdir_nvs/atlas-BNSTamyg_dseg.tsv, type: FILE, resource: PPI_SEED_ROIS}
+
+
+command: 
+  type: singularity_run
+  container: nvs-fmri
+  args: >-
+    --fmriprep1_dir /INPUTS/fmriprep1/fmriprepBIDS
+    --fmriprep2_dir /INPUTS/fmriprep2/fmriprepBIDS
+    --fmriprep3_dir /INPUTS/fmriprep3/fmriprepBIDS
+    --fmriprep4_dir /INPUTS/fmriprep4/fmriprepBIDS
+    --eprime_txt /INPUTS/eprime.txt
+    --ppiroi_niigz atlas-BNSTamyg_space-MNI152NLin6Asym_dseg.nii.gz
+    --ppiroilabels_tsv atlas-BNSTamyg_dseg.tsv
+    --hpf_sec 300
+    --mask_dilate_voxels 1
+    --atlas_space MNI152NLin6Asym
+    --input_fwhm_mm 4
+    --ppicon_fwhm_mm 0
+    --out_dir /OUTPUTS
+

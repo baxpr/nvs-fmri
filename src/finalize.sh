@@ -5,7 +5,7 @@ echo Running $(basename "${BASH_SOURCE}")
 cd "${out_dir}"
 
 # Smooth all PPI con images if requested
-# (This is actually done in the matlab section)
+# (This is actually done in the matlab section now)
 #if [[ "${ppicon_fwhm_mm}" != "0" ]]; then
 #    echo Smoothing PPI con images
 #    ppi_sigma_mm=$(bc -e "scale=3; ${ppicon_fwhm_mm}/2.354")
@@ -15,7 +15,8 @@ cd "${out_dir}"
 #    done
 #fi
 
-# Zip nifti files in SPM outputs
-find spm_nvs -name \*.nii -exec gzip {} \;
-find spm_nvs -name \*.img -exec gzip {} \;
+# Zip SPM and PPI outputs all together
+tar -zxf spm_nvs.tgz spm_nvs
 
+# Zip niis
+gzip roiwkdir_nvs/ratlas-BNSTamyg_space-MNI152NLin6Asym_dseg.nii

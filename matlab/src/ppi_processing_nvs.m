@@ -14,6 +14,7 @@ mkdir(roi_dir);
 ppiroi_niigz = which(inp.ppiroi_niigz);
 ppiroilabels_tsv = which(inp.ppiroilabels_tsv);
 copyfile(ppiroi_niigz,roi_dir);
+copyfile(ppiroilabels_tsv,roi_dir);
 [p,n,e] = fileparts(ppiroi_niigz);
 ppiroi_niigz = fullfile(roi_dir,[n e]);
 
