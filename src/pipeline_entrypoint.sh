@@ -6,8 +6,8 @@ echo Running $(basename "${BASH_SOURCE}")
 
 # Initialize defaults
 export hpf_sec=300
-export input_fwhm_mm=0
-export ppicon_fwhm_mm=4
+export input_fwhm_mm=4
+export ppicon_fwhm_mm=0
 export ppiroi_niigz="none"
 export ppiroilabels_tsv="none"
 export ppi_subjlabel="subj"
