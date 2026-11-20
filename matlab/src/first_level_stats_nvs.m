@@ -1,11 +1,28 @@
 function first_level_stats_nvs(inp)
 
+disp(inp)
+
 tag = 'nvs';
+
+spm_dir = fullfile(inp.out_dir,['spm_' tag]);
+if ~exist(spm_dir,'dir')
+    mkdir(spm_dir)
+end
 
 nprocruns = numel(inp.fmri_nii);
 
 % Filter param
 hpf_sec = str2double(inp.hpf_sec);
+
+% Brute force way to load TRs
+%clear TRs
+%for f = 1:numel(inp.fmri_nii)
+%    fid = fopen(inp.fmri_nii{f},'r','ieee-le'); % most NIfTI are little-endian
+%    fseek(fid, 76, 'bof');                      % offset to pixdim[0]
+%    pixdim = fread(fid, 8, 'float32');          % pixdim[0..7]
+%    fclose(fid);
+%    TRs(f) = pixdim(5);                         % pixdim[4] in 0-based; 5th element in MATLAB
+%end
 
 % Get TRs and check
 N = nifti(inp.fmri_nii{1});
@@ -20,30 +37,38 @@ fprintf('ALERT: USING TR OF %0.3f sec FROM FMRI NIFTI\n',tr)
 
 
 % Smooth fmriprep's fmri timeseries and get smoothed filenames
-fwhm_mm = str2double(inp.fwhm_mm);
-clear smfri_nii
-procr = 0;
-for imgs = inp.fmri_nii
+input_fwhm_mm = str2double(inp.input_fwhm_mm);
 
-    clear matlabbatch
-    matlabbatch{1}.spm.spatial.smooth.data = imgs(1);
-    matlabbatch{1}.spm.spatial.smooth.fwhm = [fwhm_mm fwhm_mm fwhm_mm];
-    matlabbatch{1}.spm.spatial.smooth.dtype = 0;
-    matlabbatch{1}.spm.spatial.smooth.im = 0;
-    matlabbatch{1}.spm.spatial.smooth.prefix = 's';
-    spm_jobman('run',matlabbatch);
+if input_fwhm_mm>0
 
-    [~,n,e] = fileparts(imgs{1});
-    procr = procr + 1;
-    sfmri_nii{procr} = fullfile(inp.out_dir,['s' n e]);
+    clear sfmri_nii
+    procr = 0;
+    for imgs = inp.fmri_nii
+
+        clear matlabbatch
+        matlabbatch{1}.spm.spatial.smooth.data = imgs(1);
+        matlabbatch{1}.spm.spatial.smooth.fwhm = [input_fwhm_mm input_fwhm_mm input_fwhm_mm];
+        matlabbatch{1}.spm.spatial.smooth.dtype = 0;
+        matlabbatch{1}.spm.spatial.smooth.im = 0;
+        matlabbatch{1}.spm.spatial.smooth.prefix = 's';
+        spm_jobman('run',matlabbatch);
+
+        [~,n,e] = fileparts(imgs{1});
+        procr = procr + 1;
+        sfmri_nii{procr} = fullfile(inp.out_dir,['s' n e]);
+
+    end
+
+else  % No smoothing
+
+    sfmri_nii = inp.fmri_nii;
 
 end
-
+    
 
 %% Design
 clear matlabbatch
-matlabbatch{1}.spm.stats.fmri_spec.dir = ...
-	{fullfile(inp.out_dir,['spm_' tag])};
+matlabbatch{1}.spm.stats.fmri_spec.dir = {spm_dir};
 matlabbatch{1}.spm.stats.fmri_spec.timing.units = 'secs';
 matlabbatch{1}.spm.stats.fmri_spec.timing.RT = tr;
 matlabbatch{1}.spm.stats.fmri_spec.timing.fmri_t = 16;
@@ -52,18 +77,18 @@ matlabbatch{1}.spm.stats.fmri_spec.fact = struct('name', {}, 'levels', {});
 matlabbatch{1}.spm.stats.fmri_spec.bases.hrf.derivs = [0 0];
 matlabbatch{1}.spm.stats.fmri_spec.volt = 1;
 matlabbatch{1}.spm.stats.fmri_spec.global = 'None';
+matlabbatch{1}.spm.stats.fmri_spec.mask = {inp.fmriprep_mask_nii};
+%matlabbatch{1}.spm.stats.fmri_spec.mask = {[spm('dir') filesep 'tpm' filesep 'mask_ICV.nii']};
+matlabbatch{1}.spm.stats.fmri_spec.masking.im = 0;
 matlabbatch{1}.spm.stats.fmri_spec.mthresh = -Inf;
-matlabbatch{1}.spm.stats.fmri_spec.mask = {[spm('dir') '/tpm/mask_ICV.nii']};
 matlabbatch{1}.spm.stats.fmri_spec.cvi = 'AR(1)';
 
 for procr = 1:nprocruns
 
 	% Session-specific scans, regressors, params
-	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).scans = ...
-		sfmri_nii(procr);
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).scans = sfmri_nii(procr);
 	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi = {''};
-	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).regress = ...
-		struct('name', {}, 'val', {});
+	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).regress = struct('name', {}, 'val', {});
 	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).multi_reg = {''};
     %matlabbatch{1}.spm.stats.fmri_spec.sess(r).multi_reg = ...
 	%	{fullfile(inp.out_dir,['motpar' num2str(r) '.txt'])};
@@ -79,6 +104,22 @@ for procr = 1:nprocruns
     	matlabbatch{1}.spm.stats.fmri_spec.sess(procr).cond(c).tmod = 0;
     end
 
+end
+
+
+% Convert 4D nii filename to 3D list for SPM8
+for i = 1:numel(matlabbatch{1}.spm.stats.fmri_spec.sess)
+    f4d = matlabbatch{1}.spm.stats.fmri_spec.sess(i).scans{1};
+    [p,n,e] = fileparts(f4d);
+
+    % make full path relative to the batch dir if needed
+    f4d_full = fullfile(matlabbatch{1}.spm.stats.fmri_spec.dir{1}, f4d);
+    if ~exist(f4d_full,'file')
+        f4d_full = f4d;
+    end
+
+    vols = cellstr(spm_select('ExtFPList', fileparts(f4d_full), [n e], Inf));
+    matlabbatch{1}.spm.stats.fmri_spec.sess(i).scans = vols;
 end
 
 
@@ -108,110 +149,110 @@ c = 0;
 
 % Combined conditions for sanity check
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue All';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [1/3 1/3 1/3 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueAll';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [1/3 1/3 1/3 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image All';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 1/4 1/4 1/4 1/4];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageAll';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 1/4 1/4 1/4 1/4];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image All gt Cue All';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [-1/3 -1/3 -1/3 1/4 1/4 1/4 1/4];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageAllGtCueAll';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [-1/3 -1/3 -1/3 1/4 1/4 1/4 1/4];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 % Individual predictors
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Neutral';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [1 0 0 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [1 0 0 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Fear';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 1 0 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueFear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 1 0 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Unknown';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 1 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueUnknown';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 1 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Neutral';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 1 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 1 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Fear';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 1 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageFear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 0 1 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Unknown Neutral';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 0 1 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 0 0 1 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Unknown Fear';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 0 0 1];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownFear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 0 0 0 1];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 % Comparisons
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Fear gt Neutral';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [-1 1 0 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueFearGtNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [-1 1 0 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Unknown gt Neutral';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [-1 0 1 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueUnknownGtNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [-1 0 1 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Cue Unknown gt Fear';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 -1 1 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'CueUnknownGtFear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 -1 1 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image Fear gt Neutral';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 -1 1 0 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageFearGtNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 -1 1 0 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownEither gt Neutral';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 -1 0 0.5 0.5];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownEitherGtNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 -1 0 0.5 0.5];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownEither gt Fear';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 -1 0.5 0.5];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownEitherGtFear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 0 -1 0.5 0.5];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownNeutral gt Neutral';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 -1 0 1 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownNeutralGtNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 -1 0 1 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownFear gt Neutral';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 -1 0 0 1];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownFearGtNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 -1 0 0 1];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownNeutral gt Fear';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 -1 1 0];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownNeutralGtFear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 0 -1 1 0];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownFear gt Fear';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 -1 0 1];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownFearGtFear';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 0 -1 0 1];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 c = c + 1;
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'Image UnknownFear gt UnknownNeutral';
-matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = [0 0 0 0 0 -1 1];
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = 'ImageUnknownFearGtUnknownNeutral';
+matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = [0 0 0 0 0 -1 1];
 matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 
 
@@ -221,22 +262,10 @@ for k = 1:numc
         c = c + 1;
         matlabbatch{3}.spm.stats.con.consess{c}.tcon.name = ...
                 ['Neg ' matlabbatch{3}.spm.stats.con.consess{c-numc}.tcon.name];
-        matlabbatch{3}.spm.stats.con.consess{c}.tcon.weights = ...
-                - matlabbatch{3}.spm.stats.con.consess{c-numc}.tcon.weights;
+        matlabbatch{3}.spm.stats.con.consess{c}.tcon.convec = ...
+                - matlabbatch{3}.spm.stats.con.consess{c-numc}.tcon.convec;
         matlabbatch{3}.spm.stats.con.consess{c}.tcon.sessrep = 'replsc';
 end
-
-
-%% Review design
-matlabbatch{4}.spm.stats.review.spmmat = ...
-	matlabbatch{2}.spm.stats.fmri_est.spmmat;
-matlabbatch{4}.spm.stats.review.display.matrix = 1;
-matlabbatch{4}.spm.stats.review.print = false;
-
-matlabbatch{5}.cfg_basicio.run_ops.call_matlab.inputs{1}.string = ...
-        fullfile(inp.out_dir,['first_level_design_' tag '.png']);
-matlabbatch{5}.cfg_basicio.run_ops.call_matlab.outputs = cell(1,0);
-matlabbatch{5}.cfg_basicio.run_ops.call_matlab.fun = 'spm_window_print';
 
 
 %% Save batch and run
@@ -258,7 +287,26 @@ end
 writetable(connames,fullfile(inp.out_dir,['spm_contrast_names_' tag '.csv']));
 
 
+%% Design matrix overview
+disp('Design matrix overview')
+SPMmat = fullfile(matlabbatch{1}.spm.stats.fmri_spec.dir{1}, 'SPM.mat');
+S = load(SPMmat);
+SPM = S.SPM;
+
+F = spm_figure('GetWin','Graphics');
+spm_figure('Clear',F);
+figure(F);
+
+spm_DesRep('DesMtx', SPM.xX);
+
+drawnow; pause(0.1);
+
+spm_window_print(fullfile(inp.out_dir, ['first_level_design_' tag '.png']));
+
+
 %% Results display
+disp('Results display')
+
 % Needed to create the spmT even if we don't get the figure window
 xSPM = struct( ...
     'swd', matlabbatch{1}.spm.stats.fmri_spec.dir, ...

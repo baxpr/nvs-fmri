@@ -6,21 +6,34 @@ echo Running $(basename "${BASH_SOURCE}")
 
 # Initialize defaults
 export hpf_sec=300
-export fwhm_mm=6
+export input_fwhm_mm=4
+export ppicon_fwhm_mm=0
+export ppiroi_niigz="none"
+export ppiroilabels_tsv="none"
+export ppi_subjlabel="subj"
+export mask_dilate_voxels=1
+export atlas_space=MNI152NLin6Asym
 export out_dir=/OUTPUTS
 
 # Parse input 
 while [[ $# -gt 0 ]]; do
     key="${1}"
     case $key in   
-        --fmriprep1_dir) export fmriprep1_dir="${2}"; shift; shift ;;
-        --fmriprep2_dir) export fmriprep2_dir="${2}"; shift; shift ;;
-        --fmriprep3_dir) export fmriprep3_dir="${2}"; shift; shift ;;
-        --fmriprep4_dir) export fmriprep4_dir="${2}"; shift; shift ;;
-        --eprime_txt)    export eprime_txt="${2}";    shift; shift ;;
-        --hpf_sec)       export hpf_sec="${2}";       shift; shift ;;
-        --fwhm_mm)       export fwhm_mm="${2}";       shift; shift ;;
-        --out_dir)       export out_dir="${2}";       shift; shift ;;
+        --fmriprep1_dir)       export fmriprep1_dir="${2}";       shift; shift ;;
+        --fmriprep2_dir)       export fmriprep2_dir="${2}";       shift; shift ;;
+        --fmriprep3_dir)       export fmriprep3_dir="${2}";       shift; shift ;;
+        --fmriprep4_dir)       export fmriprep4_dir="${2}";       shift; shift ;;
+        --eprime_txt)          export eprime_txt="${2}";          shift; shift ;;
+        --hpf_sec)             export hpf_sec="${2}";             shift; shift ;;
+        --input_fwhm_mm)       export input_fwhm_mm="${2}";       shift; shift ;;
+        --ppicon_fwhm_mm)      export ppicon_fwhm_mm="${2}";      shift; shift ;;
+        --ppiroi_niigz)        export ppiroi_niigz="${2}";        shift; shift ;;
+        --ppiroilabels_tsv)    export ppiroilabels_tsv="${2}";    shift; shift ;;
+        --ppi_subjlabel)       export ppi_subjlabel="${2}";       shift; shift ;;
+        --mask_dilate_voxels)  export mask_dilate_voxels="${2}";  shift; shift ;;
+        --atlas_space)         export atlas_space="${2}";         shift; shift ;;
+        --ppi_subjlabel)       export ppi_subjlabel="${2}";       shift; shift ;;
+        --out_dir)             export out_dir="${2}";             shift; shift ;;
         *) echo "Input ${1} not recognized" ; shift ;;
     esac
 done
@@ -29,13 +42,20 @@ done
 eprime_to_csv.py -o "${out_dir}"/eprime.csv "${eprime_txt}"
 
 # Run the matlab pipeline in xvfb
-run_spm12.sh "${MATLAB_RUNTIME}" function matlab_entrypoint \
+run_spm8.sh "${MATLAB_RUNTIME}" function matlab_entrypoint \
     fmriprep1_dir "${fmriprep1_dir}" \
     fmriprep2_dir "${fmriprep2_dir}" \
     fmriprep3_dir "${fmriprep3_dir}" \
     fmriprep4_dir "${fmriprep4_dir}" \
+    eprime_csv "${out_dir}"/eprime.csv \
+    ppiroi_niigz "${ppiroi_niigz}" \
+    ppiroilabels_tsv "${ppiroilabels_tsv}" \
+    ppi_subjlabel "${ppi_subjlabel}" \
+    mask_dilate_voxels "${mask_dilate_voxels}" \
+    atlas_space "${atlas_space}" \
     hpf_sec "${hpf_sec}" \
-    fwhm_mm "${fwhm_mm}" \
+    input_fwhm_mm "${input_fwhm_mm}" \
+    ppicon_fwhm_mm "${ppicon_fwhm_mm}" \
     out_dir "${out_dir}"
 
 # Freeview-based PDF creation
